@@ -1,0 +1,23 @@
+{
+  "name": "events_customers_crm",
+  "version": "0.1.0",
+  "description": "Small app to control customers communication on the event business, spetialy in the wedding one",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "author": "David Anton Asensio",
+  "license": "None",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13",
+    "vue-router": "^3.0.2",
+    "vue2-datepicker": "^2.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
