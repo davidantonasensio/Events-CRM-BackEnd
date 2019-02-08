@@ -60,6 +60,14 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   /*text-align: center;*/
   color: #707070;
-  margin-top: 60px;
+}
+body {    
+    background: #fff none repeat scroll 0 0;
+    /*font: 14px/1.7 "Source Sans Pro",sans-serif;*/
+    line-height: 1.42857;
+    /*margin: 60px 0 0 0;*/
+    margin: 0;
+    padding:0; 
+    box-sizing:border-box;
 }
 </style>
