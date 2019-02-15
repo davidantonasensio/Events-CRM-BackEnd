@@ -8,14 +8,15 @@
         <input type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
 
       <label>Contact Date</label><br>
-      <date-picker v-model="posts[0].DateContact" type='date' format="DD-MM-YYYY" value-type="format" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
+      {{posts[0].DateContact}}<br>
+      <date-picker v-model="posts[0].DateContact" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
       <label>Source</label><br>
       <input type="text" v-model="posts[0].Source" placeholder="Introduce the source"><br>
 
       <label>Wedding Info</label><br>
       <div class="subFields">
         <label>Date</label><br>
-        <date-picker v-model="posts[0].WeddingInfo.DateWedding" type='date' format="DD-MM-YYYY" value-type="format" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
+        <date-picker v-model="posts[0].WeddingInfo.DateWedding" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
         <label>Location</label>
         <input type="text" v-model="posts[0].WeddingInfo.WeddingLocation" placeholder="Wedding Location">
       </div>
@@ -46,28 +47,43 @@
       <input type="text" v-model="posts[0].CoupleAddress" placeholder="Couple Address"><br>
 
       <br><br>
-      <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].AlreadyCustomer"> Check to fill Contract information
-      <br><br>
-      <div v-if="posts[0].AlreadyCustomer">
-      <label>Contract Info</label><br>
-        <div class="subFields">
-          <label>Contract Date</label><br>
-          <date-picker v-model="posts[0].ContractInfo.ContractDate" type='date' format="DD-MM-YYYY" value-type="format" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
-          <label>Ordered Services</label><br>
-          <input type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services"><br>
-          <label>Ordered Products</label><br>
-          <input type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products"><br>
-          <label>Number of Hours</label><br>
-          <input type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
-          <label>Total Price</label><br>
-          <input type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price"><br>
-          <label>Deposit to Pay</label><br>
-          <input type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay"><br>
-          <label>Deposit already Payed?</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.DepositPayed"><br>
-          <label>Permision to public Fotos</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.PermisionPublic"><br>
-                 
+      <div id="app">
+        
+        <div class="barbtn" v-on:click="contractVisible = !contractVisible">
+          <span v-if="contractVisible">- View Contract fields?</span>
+          <span v-else>+ View Contract fields?</span>            
         </div>
+
+        <transition name="fade">
+        <div v-if="contractVisible">    
+          <br>
+          <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].AlreadyCustomer"> 
+          <br><br>
+
+
+          <label>Contract Info</label><br>
+            <div class="subFields">
+              <label>Contract Date</label><br>
+              <date-picker v-model="posts[0].ContractInfo.ContractDate" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
+              <label>Ordered Services</label><br>
+              <input type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services"><br>
+              <label>Ordered Products</label><br>
+              <input type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products"><br>
+              <label>Number of Hours</label><br>
+              <input type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
+              <label>Total Price</label><br>
+              <input type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price"><br>
+              <label>Deposit to Pay</label><br>
+              <input type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay"><br>
+              <label>Deposit already Payed?</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.DepositPayed"><br>
+              <label>Permision to public Fotos</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.PermisionPublic"><br>
+                    
+            </div>
+
+        </div>
+        </transition>
       </div>
+      <br><br>
      
       <label>Text, Comment</label><br>
       <textarea name="comment" form="usrform"  v-model="posts[0].Comments" placeholder="Here some coments">Enter text here...</textarea>
@@ -93,6 +109,7 @@ export default {
   },
   data() {
     return {
+      contractVisible: false,
       posts: {
         0: {
           WeddingInfo:{
@@ -137,6 +154,14 @@ export default {
 </script>
 
 <style scoped>
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
  div.create-post {
    text-align: left;
    /*max-width: 900px;*/
@@ -234,6 +259,24 @@ div.create-post .checkbox {
 
   .btn:hover{
     background: #666;
+  }
+
+
+  .barbtn{
+    width: 100%;
+    height: 25px;
+    margin: 0px 0 0px 0;
+    padding:10px;
+    display: inline-block;
+    border: none;
+    background: rgb(148, 67, 67);
+    color: #fff;
+    padding: 7px 20px;
+    cursor: pointer;
+  }
+
+  .barbtn:hover{
+    background: rgb(190, 106, 106);
   }
 
 

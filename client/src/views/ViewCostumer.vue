@@ -4,16 +4,19 @@
   <div class="container" v-if="!error">    
     <div class="create-post">  
       <h1>ID:  {{ posts[0].ownID }}</h1>
-      <button class="btn" v-on:click="EditPost">Edit</button>
+      <v-dialog/>
+      <button class="btn" v-on:click="EditPost">Edit</button><br><br>
+      <button class="btn" v-on:click="show">Delete</button>
+      
 
 
 <ul>
       <li><label>Already Customer: </label> <span v-if="posts[0].AlreadyCustomer"><strong>Yes</strong></span><span v-else><strong>No</strong></span></li>
-      <li><label>Contact Date: </label> <strong>{{ posts[0].DateContact }}</strong></li>
+      <li><label>Contact Date: </label> <strong><span >{{  moment(posts[0].DateContact).format('DD.MM.YYYY')  }}</span></strong></li>
       <li><label>Source: </label> <strong>{{ posts[0].Source }}</strong></li>
       <h2>Wedding Info</h2>      
             <ul>
-                <li><label>Date Wedding: </label> <strong>{{ posts[0].WeddingInfo.DateWedding }}</strong></li>
+                <li><label>Date Wedding: </label> <strong>{{ moment(posts[0].WeddingInfo.DateWedding).format('DD.MM.YYYY') }}</strong></li>
                 <li><label>Wedding Location: </label> <strong>{{ posts[0].WeddingInfo.WeddingLocation }}</strong></li>
             </ul>
 
@@ -45,7 +48,7 @@
       <div style="clear:both; margin-top:35px; " v-if="posts[0].AlreadyCustomer"> 
         <h2>Contract Info</h2>      
               <ul>
-                  <li><label>Contract Date: </label> <strong>{{ posts[0].ContractInfo.ContractDate }}</strong></li>
+                  <li><label>Contract Date: </label> <strong>{{ moment(posts[0].ContractInfo.ContractDate).format('DD.MM.YYYY') }}</strong></li>
                   <li><label>Ordered Services: </label> <strong>{{ posts[0].ContractInfo.OrderedServices }}</strong></li>
                   <li><label>Ordered Products: </label> <strong>{{ posts[0].ContractInfo.OrderedProducts }}</strong></li>
                   <li><label>Number of Hours: </label> <strong>{{ posts[0].ContractInfo.NumberHours }} Hours</strong></li>
@@ -64,7 +67,9 @@
 <br><br>
 
       <button class="btn" v-on:click="EditPost">Edit</button><br><br>
-      <button class="btn" v-on:click="deletePost">Delete</button>
+      <button class="btn" v-on:click="show">Delete</button>
+
+
 
     </div>
 </div>
@@ -77,11 +82,17 @@
 
 <script>
 import PostService from '../PostService'
+//import moment from 'moment'
+//import VModal from 'vue-js-modal'
+//import VueMoment from 'vue-moment'
+//import moment from 'moment-timezone'
 
 export default {
   name: 'ViewCostumer',
   data() {
     return {
+      //moment:moment,
+      //VModal:VModal,
       posts: {
         0: {
           WeddingInfo:{
@@ -98,7 +109,8 @@ export default {
       error: '',
       counter: true,
       id: '',
-      id2: ''      
+      id2: '',
+      fecha: ''    
     }
   },    
   async created() {
@@ -111,6 +123,12 @@ export default {
       this.error = err.message;
     }
     this.posts2 = await PostService.getPosts(); 
+
+    //console.log(date);
+    //if(this.posts){
+      this.fecha = Date(this.posts[0].DateContact);
+      //this.fecha.getDate(this.posts[0].DateContact);
+    //}
   },
   
   methods: {    
@@ -122,13 +140,60 @@ export default {
       await PostService.deletePost(this.id);
       this.posts = await PostService.getPosts();
       this.$router.push('\/');
-    }
+    }/*,
+    async formatCompat(date) {
+      //return 'halloeee';
+      //console.log(date);
+      if(date !== undefined){
+        let fecha = new Date(date)
+        return fecha.getDate();
+      }
+      //console.log(fecha);
+      //this.fecha = date;
+      //console.log(date.getDate());
+      //return date;
+      //fecha = this.posts[0].DateContact;
+      //let ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      //return fecha.getDate();
+      //return fecha.getDate() + ' ' + ms[fecha.getMonth()] + ' ' + fecha.getFullYear();
+    }*/,
+    show () {
+      //this.$modal.show('hello-world');
+      this.$modal.show('dialog', {
+        title: 'Delete Entry ' + this.posts[0].ownID,
+        text: 'Are you sure you want to delete customer??? ' ,
+        buttons: [
+          {
+            title: 'Delete',
+            //handler: () => { alert('Woot!') }
+            handler: () => { this.deletePost() }
+            
+          },
+          {
+            title: '',       // Button title
+            default: true,    // Will be triggered by default if 'Enter' pressed.
+            handler: () => {} // Button click handler
+          },
+          {
+            title: 'Close'
+          }
+      ]
+      })
+    },
+    hide () {
+      this.$modal.hide('dialog');
+    }    
 
   }
 }
 </script>
 
 <style scoped>
+
+  .v--modal-overlay {
+    background-color: rgba(255, 0, 0, .5);
+  }
+
   h2{
     font-size: 20px;
   }

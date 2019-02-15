@@ -6,6 +6,8 @@
       <div class="divTable blueTable">
         <div class="divTableHeading">
           <div class="divTableRow">
+            <div class="divTableHead"></div>
+            <div class="divTableHead"></div>
             <div class="divTableHead">ID</div>
             <div class="divTableHead">Wedding Date</div>
             <div class="divTableHead">Wedinng Location</div>
@@ -28,14 +30,20 @@
         v-bind:key="post._id"
         v-on:dblclick="viewPost(post._id)"
       >
-        <div class="divTableRow">          
+        <v-dialog/>
+        <div class="divTableRow"> 
+          <div class="divTableCell"><button class="btn" v-on:click="show(post._id, post.ownID)">Delete</button></div>         
+          <div class="divTableCell"><button class="btn" v-on:click="EditPost(post._id)">Edit</button></div>         
           <div class="divTableCell">{{ post.ownID }}</div>
-          <div class="divTableCell">{{ post.WeddingInfo.DateWedding }}</div>
+          <div class="divTableCell" v-if="moment(post.WeddingInfo.DateWedding, moment.ISO_8601, true).isValid()">{{ moment(post.WeddingInfo.DateWedding).format('DD.MM.YYYY') }}</div>
+          <div class="divTableCell" v-else>{{ post.WeddingInfo.DateWedding }}</div>
           <div class="divTableCell">{{ post.WeddingInfo.WeddingLocation}}</div>
           <div class="divTableCell">{{ post.BrideInfo.BrideName + ' ' +  post.BrideInfo.BrideSurname}}</div>
           <div class="divTableCell">{{ post.GroomInfo.GroomName + ' ' +  post.GroomInfo.GroomSurname}}</div>
-          <div class="divTableCell">{{ post.DateContact }}</div>
-          <div class="divTableCell">{{ post.ContractInfo.ContractDate }}</div>
+          <div class="divTableCell" v-if="moment(post.DateContact, moment.ISO_8601, true).isValid()">{{ moment(post.DateContact).format('DD.MM.YYYY') }}</div>
+          <div class="divTableCell" v-else>{{ post.DateContact }}</div>
+          <div class="divTableCell" v-if="moment(post.ContractInfo.ContractDate, moment.ISO_8601, true).isValid()">{{ moment(post.ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
+          <div class="divTableCell" v-else>{{ post.ContractInfo.ContractDate }}</div>
           <div class="divTableCell">{{ post.ContractInfo.NumberHours}}</div>
           <div class="divTableCell">{{ post.ContractInfo.OrderedServices}}</div>
           <div class="divTableCell">{{ post.ContractInfo.TotalPrice}}€</div>
@@ -54,6 +62,7 @@
 
 <script>
 import PostService from '../PostService'
+import moment from 'moment'
 
 
 export default {
@@ -65,6 +74,7 @@ export default {
     </div>`,
   data() {
     return {
+      moment:moment,
       name: this.$route.params.home,
       posts: {
         0: {
@@ -86,8 +96,11 @@ export default {
     }
   },
   async created() {
+    //this.id = this.$route.query.id;
+    //this.id2 = this.id;
     try {
       this.posts = await PostService.getPosts();
+      //console.log(this.posts);
     } catch(err) {
       this.error = err.message;
     }
@@ -101,17 +114,55 @@ export default {
   },
   
   methods: {
+        
+    async EditPost(id) {
+      this.$router.push(`Edit?id=${id}`);
+    },
+    async deletePost(id){
+      //console.log("ID: ", id);
+      await PostService.deletePost(id);
+      this.posts = await PostService.getPosts();
+      //this.hide();
+      //this.$router.push('\/');
+    },
     async createPost() {
       await PostService.insertPost(this.bridename, this.text);
       this.posts = await PostService.getPosts();
-    },
+    }/*,
     async deletePost(id){
       await PostService.deletePost(id);
       this.posts = await PostService.getPosts();
-    },
+    }*/,
     viewPost(id){      
       this.$router.push(`ViewCostumer?id=${id}`);
-    }
+    },
+    show (id = '', ownID = '') {
+      //this.$modal.show('hello-world');
+      this.$modal.show('dialog', {
+        title: 'Delete Entry ' + ownID,
+        text: 'Are you sure you want to delete customer???',
+        buttons: [
+          {
+            title: 'Delete',
+            //handler: () => { alert('Woot!') }
+            handler: () => { 
+                this.deletePost(id); 
+                this.hide(); }
+          },
+          {
+            title: '',       // Button title
+            default: true,    // Will be triggered by default if 'Enter' pressed.
+            handler: () => { this.hide(); } // Button click handler
+          },
+          {
+            title: 'Close'
+          }
+      ]
+      })
+    },
+    hide () {
+      this.$modal.hide('dialog');
+    } 
 
   }
 }
@@ -119,6 +170,25 @@ export default {
 </script>
 
 <style scoped>
+
+  .v--modal-overlay {
+    background-color: rgba(255, 0, 0, .1);
+  }
+
+  .btn{
+    display: inline-block;
+    border: none;
+    background: #555;
+    color: #fff;
+    padding: 7px 18px;
+    cursor: pointer;
+  }
+
+  .btn:hover{
+    background: #666;
+  }
+
+
   div.container {
     max-width: 95%;
     margin: 0 auto;

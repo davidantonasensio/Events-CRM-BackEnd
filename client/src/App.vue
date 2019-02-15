@@ -4,6 +4,7 @@
     <Header />
     <router-view/>
     <Footer />
+
   </div>
 </template>
 
@@ -16,7 +17,7 @@ import Footer from './components/layout/Footer';
 export default {
   name: 'app',
   components: {
-    Header, Footer//, DatePicker
+    Header, Footer
     //Home
   }/*,
   data() {
