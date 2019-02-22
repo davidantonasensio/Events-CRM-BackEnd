@@ -4,34 +4,84 @@ const mongodb = require('mongodb');
 const router = express.Router();
 
 // Get Posts
-
-//if(this.params.id){
-//router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
-  //console.log(`ttttTTTTTT`);
-  //console.log(req.params.id);
-  
   const posts = await loadPostsCollection();
+  //res.send('activ: ' + req.query.activ + ', customer: ' + req.query.customer); 
   
-  res.send(await posts.find({}).toArray());
+  let lenghtYearsArray
+  if(typeof req.query.Years !== 'undefined'){ 
+    //res.send("AAAAAAAAA");
+    lenghtYearsArray = req.query.Years.length;
+  } else {
+    //res.send("BBBBB");
+    lenghtYearsArray = 0;
+  }
 
-  //res.send(await posts.find({_id: ObjecID("5c52d5f9ebb7c30c5296fc4f") }).toArray());
-  //res.send(await posts.find({_id: new mongodb.ObjectID(req.params.id) }).toArray());
-  //res.send(await posts.find({_id: new mongodb.ObjectID("5c51ca86d975ac0c139ab259") }).toArray());
-  //res.send(await posts.find({ownID: "1234567890"}).toArray());
-  //await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) });
-  
+
+
+  let JsonArray1 = [];
+  let JsonArray2 = [];
+
+
+  // search for one entry by its id
+  if(typeof req.query.id !== 'undefined' &&  req.query.id !== 'false'){
+    //res.send("9999999");
+    JsonArray1 = await posts.find({_id: new mongodb.ObjectID(req.query.id) }).toArray() 
+
+
+    // Search for entries depending of is activ, is customer and the years of the events
+  } else if(req.query.activ === 'true' ||  req.query.customer === 'true')  {
+      //res.send("8888888888");
+      if(req.query.activ === 'true'){ activ = true} else {activ=false}
+      if(req.query.customer === 'true'){ customer = true} else {customer=false}
+
+
+      // for the selected Years
+      if(lenghtYearsArray !== 0){
+        for (i = 0; i < lenghtYearsArray; i++) {
+          JsonArray2 = await posts.find({
+            "WeddingInfo.DateWedding": {
+              $gte: req.query.Years[i] + "-01-01T00:00:00.000Z",
+              $lte: req.query.Years[i] + "-12-31T00:00:00.000Z"
+            },
+            ActivCustomer: activ,
+            AlreadyCustomer: customer
+          }).toArray();
+          JsonArray1 = JsonArray1.concat(JsonArray2);
+        }
+
+      // Search just for is activ and is customer, Years are not selected  
+      } else {
+        //res.send("8888888888");
+        JsonArray1 = await posts.find({
+          ActivCustomer: activ,
+          AlreadyCustomer: customer
+        }).toArray();
+      }
+
+
+  // Search for selectios of Years, not is activ or is customer are selected
+  } else if(lenghtYearsArray !== 0){
+      //res.send("77777777777");
+      for (i = 0; i < lenghtYearsArray; i++) {
+        JsonArray2 = await posts.find({
+          "WeddingInfo.DateWedding": {
+            $gte: req.query.Years[i] + "-01-01T00:00:00.000Z",
+            $lte: req.query.Years[i] + "-12-31T00:00:00.000Z"
+          }
+        }).toArray();
+        JsonArray1 = JsonArray1.concat(JsonArray2);
+      }
+
+  // Just select everything, no filter is selected
+  } else {
+      JsonArray1 = await posts.find({}).toArray()
+      //res.send("666666666666");
+  }
+
+  res.send(JsonArray1);
+
 });
-//};
-
-
-//router.get('/id=1', async (req, res) => {
-router.get('/:id', async (req, res) => {
-  const posts = await loadPostsCollection();
-  res.send(await posts.find({_id: new mongodb.ObjectID(req.params.id) }).toArray());
-  //res.send("blablabla");
-});
-
 
 
 
@@ -41,7 +91,8 @@ router.post('/', async (req, res) => {
   const posts = await loadPostsCollection();
 
     await posts.insertOne({
-      ownID: req.body.post[0].ownID,
+      ownID: req.body.post[0].ownID,      
+      ActivCustomer: req.body.post[0].ActivCustomer,
       AlreadyCustomer: req.body.post[0].AlreadyCustomer,
       DateContact: req.body.post[0].DateContact,
       Source: req.body.post[0].Source,
@@ -75,7 +126,7 @@ router.post('/', async (req, res) => {
 
     if(error) {
         console.log('Error occurred while inserting');
-        res.status(201).send("11111111");
+        res.status(201).send(error);
        // return 
     } else {
        console.log('inserted record', response.ops[0]);
@@ -102,6 +153,7 @@ router.post('/update', async (req, res) => {
     },
       {$set: {
       ownID: req.body.post[0].ownID,
+      ActivCustomer: req.body.post[0].ActivCustomer,
       AlreadyCustomer: req.body.post[0].AlreadyCustomer,
       DateContact: req.body.post[0].DateContact,
       Source: req.body.post[0].Source,
@@ -149,9 +201,18 @@ router.post('/update', async (req, res) => {
 
 // Delete Post
 router.delete('/:id', async (req, res) => {
+//router.delete('/', async (req, res) => {
+  //res.status(201).send("BLABLALBALBALBABLA");
+
   const posts = await loadPostsCollection();
-  await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) });
-  res.status(200).send();
+  await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) })
+  .then(result => {
+    res.status(201).send();
+  }).catch((err) => {
+    res.status(201).send(err);
+  });
+  
+  //res.status(200).send();
 });
 
 

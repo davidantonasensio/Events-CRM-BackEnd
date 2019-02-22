@@ -7,39 +7,35 @@ let url ='http://192.168.2.65:5000/api/posts/';
 class PostService{
 
     // Get Post
-    static getPosts(id=false){
-        let url2 = url;  
-        let cambio = false;
-
-        if(id){
-            url2 = url + id;
-            cambio = true;
-        }else if(cambio){
-            url2 = url;
-        }
-        //console.log(id);
-        //console.log('Get Post: ', url2);
+    static getPosts(id=false, activ=false, customer=false, Years=[]){
+  
         return new Promise(async (resolve, reject)=> {
             try{
-                //console.log(id);
-                const res = await axios.get(url2);                
+                let lenghtYearsArray = Years.length;
+                const res = await axios.get(url, {
+                    params: {
+                        id: id,
+                        activ: activ,
+                        customer: customer,
+                        Years
+                    }
+                })
+                
+                               
                 const data = res.data;
-                //console.log(data);
-
+                //console.log('DATA: ', data)           
                 resolve(
                     data.map(post =>({
-                        ...post,
-                        createdAt: new Date(post.createdAt)
+                        ...post
                     })) 
-                )
-                
+                )                
             }   
                 catch(err){
-                //console.log('EEEEEEEEEEE');
-                //console.log(err);
                 reject(err);
             }
         }) 
+        
+        
     }
 
 
@@ -47,10 +43,10 @@ class PostService{
     static insertPost(
             post
         ){
+            console.log(post);
         return axios.post(url,{
             post
         }).then(response =>{
-            //callback(response.data.message);
             return response.data;
           }).catch(err =>{
             return err;
@@ -59,20 +55,18 @@ class PostService{
 
 
     // Update Post
-    static updatePost(
-        post
-    ){
+    static updatePost(post){
     let url3 = url + 'update';
-    
+    //console.log("post: ", post);   
+
     return axios.post(url3,{
         post
     }).then(response =>{
-        //callback(response.data.message);
         return response.data;
       }).catch(err =>{
         return err;
       });
-      
+     
 }
 
     // Delete Post

@@ -1,7 +1,31 @@
 <template>
   <div class="container">
     <h1>List of Customers</h1>
-    <p class="error" v-if="error">{{ error }}</p>
+
+    <div class="search" >
+      <div style="float:left; margin-right:50px;">
+        <p class="error" v-if="error">{{ error }}</p>
+        <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-on:change="Paramsschange" v-model="AlreadyCustomer"> | 
+        <label>Activ Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-on:change="Paramsschange" v-model="ActivCustomer">
+      </div>
+      <div style="float:left;">
+        <label>Select Wedding Years: </label>
+        <span style="margin-right:10px;"
+          v-for="(Year, index) in YearsArray"
+          v-bind:item="Year"
+          v-bind:index="index"
+          v-bind:key="Year"
+        >
+        <span class="checkbox">  {{Year}} </span> <input type="checkbox" v-on:change="Paramsschange" :value="Year" v-model="YearChoosed">  </span>
+      </div>
+    </div>
+
+
+    
+
+
+
+
     <div class="posts-container">
       <div class="divTable blueTable">
         <div class="divTableHeading">
@@ -16,11 +40,8 @@
             <div class="divTableHead">Contact Date</div>
             <div class="divTableHead">Contract Date</div>
             <div class="divTableHead">Hours</div>
-            <div class="divTableHead">Services</div>
             <div class="divTableHead">Total Price</div>
-            <div class="divTableHead">Deposit</div>
-            <div class="divTableHead">Public Permit</div>
-            <div class="divTableHead">Source</div>
+
           </div>
         </div>
       <div class="divTableBody post"
@@ -45,12 +66,8 @@
           <div class="divTableCell" v-if="moment(post.ContractInfo.ContractDate, moment.ISO_8601, true).isValid()">{{ moment(post.ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
           <div class="divTableCell" v-else>{{ post.ContractInfo.ContractDate }}</div>
           <div class="divTableCell">{{ post.ContractInfo.NumberHours}}</div>
-          <div class="divTableCell">{{ post.ContractInfo.OrderedServices}}</div>
           <div class="divTableCell">{{ post.ContractInfo.TotalPrice}}€</div>
-          <div class="divTableCell">{{ post.ContractInfo.DepositToPay}}€</div>
-          <div class="divTableCell" v-if="post.ContractInfo.PermisionPublic">Yes</div>
-          <div class="divTableCell" v-else="post.ContractInfo.PermisionPublic">No</div>
-          <div class="divTableCell">{{ post.Source}}</div>
+
         </div>
     </div>
 </div>
@@ -74,6 +91,8 @@ export default {
     </div>`,
   data() {
     return {
+      AlreadyCustomer: false,
+      ActivCustomer: false,
       moment:moment,
       name: this.$route.params.home,
       posts: {
@@ -92,50 +111,77 @@ export default {
       error: '',
       ownID: '',
       bridename: '',
-      text: ''
+      text: '',
+      YearsArray: [],
+      YearChoosed: [new Date().getFullYear()],
     }
   },
   async created() {
     //this.id = this.$route.query.id;
-    //this.id2 = this.id;
     try {
-      this.posts = await PostService.getPosts();
-      //console.log(this.posts);
+      this.posts = await PostService.getPosts(false, this.ActivCustomer, this.AlreadyCustomer, this.year);
+      this. ActivCustomer = true;
+      this.Paramsschange();      
+
+      this.posts.sort(this.compare);
+      
+      let i;
+      let ii = 0;
+      for (i = 0; i < this.posts.length; i++) {
+        //text += cars[i] + "<br>";     
+        this.years = this.posts[i].WeddingInfo.DateWedding.substring(0,4);
+        //console.log(this.years);
+        if(!this.YearsArray.includes(this.years)){
+          this.YearsArray[ii] = this.years;
+          ii++;
+        }
+      }
+      this.YearsArray.sort();
+
     } catch(err) {
       this.error = err.message;
     }
-  },
+
+  }
+  /*,
   async mounted() {
      try {
       this.posts = await PostService.getPosts();
     } catch(err) {
       this.error = err.message;
     }
-  },
+  }*/,
   
   methods: {
-        
+
+    compare(a, b) {
+      // Use toUpperCase() to ignore character casing
+      const DateContactA = a.DateContact.toUpperCase();
+      const DateContactB = b.DateContact.toUpperCase();
+
+      let comparison = 0;
+      if (DateContactA > DateContactB) {
+        comparison = 1;
+      } else if (DateContactA < DateContactB) {
+        comparison = -1;
+      }
+      return comparison * -1 ;
+    },
+
     async EditPost(id) {
       this.$router.push(`Edit?id=${id}`);
     },
+
     async deletePost(id){
-      //console.log("ID: ", id);
       await PostService.deletePost(id);
       this.posts = await PostService.getPosts();
-      //this.hide();
       //this.$router.push('\/');
     },
-    async createPost() {
-      await PostService.insertPost(this.bridename, this.text);
-      this.posts = await PostService.getPosts();
-    }/*,
-    async deletePost(id){
-      await PostService.deletePost(id);
-      this.posts = await PostService.getPosts();
-    }*/,
+
     viewPost(id){      
       this.$router.push(`ViewCostumer?id=${id}`);
     },
+
     show (id = '', ownID = '') {
       //this.$modal.show('hello-world');
       this.$modal.show('dialog', {
@@ -160,8 +206,20 @@ export default {
       ]
       })
     },
+
     hide () {
       this.$modal.hide('dialog');
+    },
+
+    async Paramsschange() {
+      try {
+        //console.log(this.YearChoosed);
+        this.posts = await PostService.getPosts(false, this.ActivCustomer, this.AlreadyCustomer, this.YearChoosed);
+        this.posts.sort(this.compare);
+        //console.log(this.posts);
+      } catch(err) {
+        this.error = err.message;
+      }
     } 
 
   }
@@ -221,7 +279,7 @@ export default {
 }
 
 .divTable.blueTable .divTableCell, .divTable.blueTable .divTableHead {
-  padding: 10px 5px;
+  padding: 3px 3px;
   border-bottom: 1px solid rgb(194, 194, 194);
 }
 .divTable.blueTable .divTableBody .divTableCell {

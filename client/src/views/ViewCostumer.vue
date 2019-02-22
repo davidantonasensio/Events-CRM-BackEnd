@@ -12,6 +12,7 @@
 
 <ul>
       <li><label>Already Customer: </label> <span v-if="posts[0].AlreadyCustomer"><strong>Yes</strong></span><span v-else><strong>No</strong></span></li>
+      <li><label>Active Customer: </label> <span v-if="posts[0].ActivCustomer"><strong>Yes</strong></span><span v-else><strong>No</strong></span></li>
       <li><label>Contact Date: </label> <strong><span >{{  moment(posts[0].DateContact).format('DD.MM.YYYY')  }}</span></strong></li>
       <li><label>Source: </label> <strong>{{ posts[0].Source }}</strong></li>
       <h2>Wedding Info</h2>      
@@ -243,7 +244,6 @@ export default {
   .btn:hover{
     background: #666;
   }
-
 
 
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */

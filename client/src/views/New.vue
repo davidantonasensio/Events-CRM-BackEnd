@@ -4,8 +4,14 @@
     <h1>New Couple</h1>
     <div class="create-post">   
 
-        <label>Own ID</label><br>
-        <input type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
+      <label>Own ID</label><br>
+      <input type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
+
+      <label>Actualy activ</label><br>
+      Yes<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=true checked> 
+      Not<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=false><br>
+      <span>Picked: {{ posts[0].ActivCustomer }}</span>
+      <br><br>
 
       <label>Contact Date</label><br>
       {{posts[0].DateContact}}<br>
@@ -112,6 +118,8 @@ export default {
       contractVisible: false,
       posts: {
         0: {
+          ActivCustomer:true,
+          AlreadyCustomer: false,
           WeddingInfo:{
           },
           BrideInfo: {
@@ -217,6 +225,17 @@ div.create-post .checkbox {
   height: 15px;
   width: 15px;
   margin-left: 15px;
+  /*background-color: #eee;*/
+}
+
+/* Create a custom radio buttom */
+div.create-post .radio{
+  /*position: absolute;*/  
+  /*top: 0;
+  left: 0;*/
+  height: 0px;
+  width: 25px;
+  margin-right: 25px;
   /*background-color: #eee;*/
 }
 
