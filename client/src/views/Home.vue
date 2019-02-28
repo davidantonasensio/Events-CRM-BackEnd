@@ -1,15 +1,16 @@
 <template>
   <div class="container">
+    <v-dialog/>
     <h1>List of Customers</h1>
 
-    <div class="search" >
-      <div style="float:left; margin-right:50px;">
+    <div class="search">
+      <div class="search1">
         <p class="error" v-if="error">{{ error }}</p>
         <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-on:change="Paramsschange" v-model="AlreadyCustomer"> | 
         <label>Activ Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-on:change="Paramsschange" v-model="ActivCustomer">
       </div>
-      <div style="float:left;">
-        <label>Select Wedding Years: </label>
+      <div class="search2">
+        <label>Select Event Years: </label>
         <span style="margin-right:10px;"
           v-for="(Year, index) in YearsArray"
           v-bind:item="Year"
@@ -21,27 +22,22 @@
     </div>
 
 
-    
-
-
-
-
     <div class="posts-container">
       <div class="divTable blueTable">
         <div class="divTableHeading">
           <div class="divTableRow">
             <div class="divTableHead"></div>
             <div class="divTableHead"></div>
+            <div class="divTableHead"></div>
             <div class="divTableHead">ID</div>
-            <div class="divTableHead">Wedding Date</div>
-            <div class="divTableHead">Wedinng Location</div>
-            <div class="divTableHead">Bride Name</div>
-            <div class="divTableHead">Groom Name</div>
+            <div class="divTableHead">Event Date</div>
+            <div class="divTableHead">Location</div>
+            <div class="divTableHead">Contact Person 1</div>
+            <div class="divTableHead">Contact Person 2</div>
             <div class="divTableHead">Contact Date</div>
             <div class="divTableHead">Contract Date</div>
             <div class="divTableHead">Hours</div>
             <div class="divTableHead">Total Price</div>
-
           </div>
         </div>
       <div class="divTableBody post"
@@ -51,23 +47,23 @@
         v-bind:key="post._id"
         v-on:dblclick="viewPost(post._id)"
       >
-        <v-dialog/>
+        
         <div class="divTableRow"> 
           <div class="divTableCell"><button class="btn" v-on:click="show(post._id, post.ownID)">Delete</button></div>         
-          <div class="divTableCell"><button class="btn" v-on:click="EditPost(post._id)">Edit</button></div>         
+          <div class="divTableCell"><button class="btn" v-on:click="$router.push('Edit?id=' + post._id)">Edit</button></div>  
+          <div class="divTableCell"><button class="btn" v-on:click="$router.push('insertinfo?id=' + post._id)">Info</button></div>        
           <div class="divTableCell">{{ post.ownID }}</div>
-          <div class="divTableCell" v-if="moment(post.WeddingInfo.DateWedding, moment.ISO_8601, true).isValid()">{{ moment(post.WeddingInfo.DateWedding).format('DD.MM.YYYY') }}</div>
-          <div class="divTableCell" v-else>{{ post.WeddingInfo.DateWedding }}</div>
-          <div class="divTableCell">{{ post.WeddingInfo.WeddingLocation}}</div>
-          <div class="divTableCell">{{ post.BrideInfo.BrideName + ' ' +  post.BrideInfo.BrideSurname}}</div>
-          <div class="divTableCell">{{ post.GroomInfo.GroomName + ' ' +  post.GroomInfo.GroomSurname}}</div>
+          <div class="divTableCell" v-if="moment(post.EventInfo.DateEvent, moment.ISO_8601, true).isValid()">{{ moment(post.EventInfo.DateEvent).format('DD.MM.YYYY') }}</div>
+          <div class="divTableCell" v-else>{{ post.EventInfo.DateEvent }}</div>
+          <div class="divTableCell">{{ post.EventInfo.EventLocation}}</div>
+          <div class="divTableCell">{{ post.Client1Info.Client1Name + ' ' +  post.Client1Info.Client1Surname}}</div>
+          <div class="divTableCell">{{ post.Client2Info.Client2Name + ' ' +  post.Client2Info.Client2Surname}}</div>
           <div class="divTableCell" v-if="moment(post.DateContact, moment.ISO_8601, true).isValid()">{{ moment(post.DateContact).format('DD.MM.YYYY') }}</div>
           <div class="divTableCell" v-else>{{ post.DateContact }}</div>
           <div class="divTableCell" v-if="moment(post.ContractInfo.ContractDate, moment.ISO_8601, true).isValid()">{{ moment(post.ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
           <div class="divTableCell" v-else>{{ post.ContractInfo.ContractDate }}</div>
           <div class="divTableCell">{{ post.ContractInfo.NumberHours}}</div>
           <div class="divTableCell">{{ post.ContractInfo.TotalPrice}}€</div>
-
         </div>
     </div>
 </div>
@@ -84,11 +80,13 @@ import moment from 'moment'
 
 export default {
   name: 'Home',
+  /*
   template: `
   	<div>
   		<div>Execute only once '{{name}}', Not initialized again？？？</div>
     	<div>Current route '{{$route.params.name}}'</div>
     </div>`,
+    */
   data() {
     return {
       AlreadyCustomer: false,
@@ -97,11 +95,11 @@ export default {
       name: this.$route.params.home,
       posts: {
         0: {
-          WeddingInfo:{
+          EventInfo:{
           },
-          BrideInfo: {
+          Client1Info: {
           },
-          GroomInfo: {
+          Client2Info: {
           },
           ContractInfo: {
           }
@@ -110,17 +108,18 @@ export default {
       posttoview: '',
       error: '',
       ownID: '',
-      bridename: '',
+      //bridename: '',
       text: '',
       YearsArray: [],
-      YearChoosed: [new Date().getFullYear()],
+      //YearChoosed: [new Date().getFullYear()]
+      YearChoosed: []
     }
   },
   async created() {
     //this.id = this.$route.query.id;
     try {
       this.posts = await PostService.getPosts(false, this.ActivCustomer, this.AlreadyCustomer, this.year);
-      this. ActivCustomer = true;
+      //this. ActivCustomer = true;
       this.Paramsschange();      
 
       this.posts.sort(this.compare);
@@ -129,7 +128,7 @@ export default {
       let ii = 0;
       for (i = 0; i < this.posts.length; i++) {
         //text += cars[i] + "<br>";     
-        this.years = this.posts[i].WeddingInfo.DateWedding.substring(0,4);
+        this.years = this.posts[i].EventInfo.DateEvent.substring(0,4);
         //console.log(this.years);
         if(!this.YearsArray.includes(this.years)){
           this.YearsArray[ii] = this.years;
@@ -167,10 +166,12 @@ export default {
       }
       return comparison * -1 ;
     },
-
+    /*
     async EditPost(id) {
       this.$router.push(`Edit?id=${id}`);
+      
     },
+    */
 
     async deletePost(id){
       await PostService.deletePost(id);
@@ -184,6 +185,7 @@ export default {
 
     show (id = '', ownID = '') {
       //this.$modal.show('hello-world');
+      
       this.$modal.show('dialog', {
         title: 'Delete Entry ' + ownID,
         text: 'Are you sure you want to delete customer???',
@@ -205,6 +207,7 @@ export default {
           }
       ]
       })
+      
     },
 
     hide () {
@@ -229,6 +232,21 @@ export default {
 
 <style scoped>
 
+  div.search {
+    margin-bottom: 60px;
+    font-size: 14px;
+  }
+
+  div.search .search1 {
+    float:left; 
+    margin-right:50px;
+  }
+
+  div.search .search2 {
+    float:left; 
+  }
+
+
   .v--modal-overlay {
     background-color: rgba(255, 0, 0, .1);
   }
@@ -236,20 +254,22 @@ export default {
   .btn{
     display: inline-block;
     border: none;
-    background: #555;
+    background: rgb(197, 197, 197);
     color: #fff;
-    padding: 7px 18px;
+    padding: 2px 5px;
     cursor: pointer;
   }
 
   .btn:hover{
-    background: #666;
+    background: rgb(155, 155, 155);
   }
 
 
   div.container {
-    max-width: 95%;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0 ;
+    padding: 20px;
+    background-color:#f0f0f0;
   }
 
   p.error {
@@ -275,22 +295,23 @@ export default {
   div.blueTable {
   width: 100%;
   text-align: left;
-  border-bottom: 1px solid rgb(194, 194, 194);
+  border-bottom: 1px solid rgb(226, 226, 226);
 }
 
 .divTable.blueTable .divTableCell, .divTable.blueTable .divTableHead {
   padding: 3px 3px;
-  border-bottom: 1px solid rgb(194, 194, 194);
+  border-bottom: 1px solid rgb(226, 226, 226);
 }
 .divTable.blueTable .divTableBody .divTableCell {
   font-size: 13px;
+  background: #ffffff;
 }
 .divTable.blueTable .divTableRow:nth-child(even) {
   /*background: #D0E4F5;*/
 }
 
 .divTable.blueTable .divTableHeading {
-  background: #cccccc;
+  background: #ffffff;
   /*
   background: -moz-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
   background: -webkit-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
@@ -302,8 +323,8 @@ export default {
 .divTable.blueTable .divTableHeading .divTableHead {
   font-size: 15px;
   /*font-weight: bold;*/
-  color: rgb(131, 131, 131);
-  border-left: 2px solid rgb(212, 212, 212);
+  color: rgb(0, 0, 0);
+  /*border-left: 2px solid rgb(212, 212, 212);*/
 }
 
 .divTable.blueTable .divTableHeading .divTableHead:first-child {

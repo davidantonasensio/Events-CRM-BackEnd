@@ -8,6 +8,8 @@ class PostService{
 
     // Get Post
     static getPosts(id=false, activ=false, customer=false, Years=[]){
+        //console.log("anos",Years);
+        //Years = ["2019"];
   
         return new Promise(async (resolve, reject)=> {
             try{
@@ -23,7 +25,7 @@ class PostService{
                 
                                
                 const data = res.data;
-                //console.log('DATA: ', data)           
+                //console.log('DATA1: ', data)           
                 resolve(
                     data.map(post =>({
                         ...post
@@ -33,24 +35,68 @@ class PostService{
                 catch(err){
                 reject(err);
             }
-        }) 
+        })
+    }
+
+    // Get Post
+    static getMessages(ClientID){
+        console.log("ClientID",ClientID);
+        //Years = ["2019"];
+        let url2 = url + 'messages';
+        //console.log("url2", url2);
+
         
+        return new Promise(async (resolve, reject)=> {
+            try{
+                //let lenghtYearsArray = Years.length;
+                const res = await axios.get(url2, {
+                    params: {
+                        ClientID: ClientID,
+                    }
+                })                
+                               
+                const data = res.data;
+                //console.log('DATA2 Messages: ', data)           
+                resolve(
+                    data.map(post =>({
+                        ...post
+                    })) 
+                )                
+            }   
+                catch(err){
+                reject(err);
+            }
+        })
         
     }
 
 
     // Insert Post
     static insertPost(
+            kindofinsert='',
             post
         ){
-            console.log(post);
-        return axios.post(url,{
+            let url2 = '';
+            console.log('post2: ', post);
+            //console.log('kind of insert: ', kindofinsert);
+        if(kindofinsert === 'insertinfo'){
+            url2 = url + 'insertinfo';
+        } else {
+            url2 = url;
+        }
+        console.log('url2: ', url2)
+        //console.log('in postservice 111: ', post2[0].CommentsInfo);
+        //let CommentsInfo = post[0].CommentsInfo;
+        
+        return axios.post(url2,{
             post
         }).then(response =>{
             return response.data;
-          }).catch(err =>{
+        }).catch(err =>{
             return err;
-          });
+        });
+        
+        
     }
 
 

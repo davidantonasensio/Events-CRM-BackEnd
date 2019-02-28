@@ -1,74 +1,212 @@
 
 <template>
-
-  <div class="container" v-if="!error">    
+  <div  class="container" v-if="!error">  
+    <v-dialog/>  
     <div class="create-post">  
-      <h1>ID:  {{ posts[0].ownID }}</h1>
-      <v-dialog/>
-      <button class="btn" v-on:click="EditPost">Edit</button><br><br>
-      <button class="btn" v-on:click="show">Delete</button>
-      
+      <button class="btn" v-on:click="EditPost">Edit</button> <button class="btn" v-on:click="show">Delete</button><br><br>
+      <h1>{{ posts[0].ownID }}</h1>
 
 
-<ul>
-      <li><label>Already Customer: </label> <span v-if="posts[0].AlreadyCustomer"><strong>Yes</strong></span><span v-else><strong>No</strong></span></li>
-      <li><label>Active Customer: </label> <span v-if="posts[0].ActivCustomer"><strong>Yes</strong></span><span v-else><strong>No</strong></span></li>
-      <li><label>Contact Date: </label> <strong><span >{{  moment(posts[0].DateContact).format('DD.MM.YYYY')  }}</span></strong></li>
-      <li><label>Source: </label> <strong>{{ posts[0].Source }}</strong></li>
-      <h2>Wedding Info</h2>      
-            <ul>
-                <li><label>Date Wedding: </label> <strong>{{ moment(posts[0].WeddingInfo.DateWedding).format('DD.MM.YYYY') }}</strong></li>
-                <li><label>Wedding Location: </label> <strong>{{ posts[0].WeddingInfo.WeddingLocation }}</strong></li>
-            </ul>
+      <div :style="theyaremessages ? 'float:left;' : '' ">
 
-      <div style="margin:20px 0 20px 0;">
-        <div style="float:left; margin-right:100px;">
-          <h2>Bride Info</h2>      
-                <ul>
-                    <li><label>Bride Name: </label> <strong>{{ posts[0].BrideInfo.BrideName }} {{ posts[0].BrideInfo.BrideSurname }}</strong></li>
-                    <li><label>Bride Telefon Number: </label> <strong>{{ posts[0].BrideInfo.BrideTel }}</strong></li>
-                    <li><label>Bride EMail: </label> <strong>{{ posts[0].BrideInfo.BrideEmail }}</strong></li>
-                </ul>
+        <div>
+           <div class="box-title">
+              Contact and person information
+           </div>
+
+           <div class="box">
+            <div>
+              <strong>Client Name</strong>
+              <div class="box03">{{ posts[0].Client1Info.Client1Name }} {{ posts[0].Client1Info.Client1Surname }}</div>
+            </div>
+            <div>
+              <strong>Client Telephon Number</strong>
+              <div class="box03">{{ posts[0].Client1Info.Client1Tel }} </div>
+            </div>
+            <div>
+              <strong>Email</strong>
+              <div class="box03">{{ posts[0].Client1Info.Client1Email }} </div>
+            </div>
+            <div>
+              <strong>Address</strong>
+              <div class="box03">{{ posts[0].Address }}</div>
+            </div>
+          </div>  
+          
+          <div class="box">
+            <div>
+              <strong>Client 2 Name</strong>
+              <div class="box03">{{ posts[0].Client2Info.Client2Name }} {{ posts[0].Client2Info.Client2Surname }}</div>
+            </div>
+            <div>
+              <strong>Client 2 Telephon Number</strong>
+              <div class="box03">{{ posts[0].Client2Info.Client2Tel }} </div>
+            </div>
+            <div>
+              <strong>Client 2 Email</strong>
+              <div class="box03">{{ posts[0].Client2Info.Client2Email }} </div>
+            </div>
+           </div>
+
+           <div style="clear:both;" v-if="theyaremessages"></div>
+
+           <div class="box">
+            <div>
+              <strong>Event Date</strong>
+              <div class="box03">{{ moment(posts[0].EventInfo.DateEvent).format('DD.MM.YYYY') }}</div>
+            </div>
+            <div class="box01">
+              <strong>Event location</strong>
+              <div class="box03">{{ posts[0].EventInfo.EventLocation }}</div>
+            </div>
+            <div>
+              <strong>Contact Date</strong>
+              <div class="box03">{{  moment(posts[0].DateContact).format('DD.MM.YYYY')  }}</div>
+            </div>
+
+
+          </div>
+
+          <div class="box">
+            <div>
+              <strong>Already Customer</strong>
+              <div class="box03"><span v-if="posts[0].AlreadyCustomer">Yes</span><span v-else>No</span></div>
+            </div>
+            <div class="box01">
+              <strong>Actual Potential Client</strong>
+              <div class="box03"><span v-if="posts[0].ActivCustomer">Yes</span><span v-else>No</span></div>
+            </div>
+            <div class="box01">
+              <strong>Source</strong>
+              <div class="box03">{{ posts[0].Source }}</div>
+            </div>
+          </div>
+
         </div>
-        <div style="float:left;">
-          <h2>Groom Info</h2>      
-                <ul>
-                    <li><label>Groom Name: </label> <strong>{{ posts[0].GroomInfo.GroomName }} {{ posts[0].GroomInfo.GroomSurname }}</strong></li>
-                    <li><label>Groom Telefon Number: </label> <strong>{{ posts[0].GroomInfo.GroomTel }}</strong></li>
-                    <li><label>Groom EMail: </label> <strong>{{ posts[0].GroomInfo.GroomEmail }}</strong></li>
-                </ul>
+
+
+        <div style="clear:both;" class="barbtn" v-on:click="contractVisible = !contractVisible">
+          <span v-if="contractVisible">- View Contract fields?</span>
+          <span v-else>+ View Contract fields?</span>            
         </div>
-        <div style="clear:both; padding-top:20px;">
-            <li><label>Couple Address: </label> <strong>{{ posts[0].CoupleAddress }}</strong></li>
+
+
+        <transition name="fade">
+        <div style="clear:both;" v-if="contractVisible">
+
+          <div class="box-title">
+            Contract information
+          </div>
+
+           <div class="box">
+            <div>
+              <strong>Contract Date</strong>
+              <div class="box03">{{ moment(posts[0].ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
+            </div>
+            <div class="box01">
+              <strong>Contracted Time</strong>
+              <div class="box03">{{ posts[0].ContractInfo.NumberHours }}</div>
+            </div>
+          </div>
+
+           <div class="box">
+            <div>
+              <strong>Ordered Services</strong>
+              <div class="box03">{{ posts[0].ContractInfo.OrderedServices }}</div>
+            </div>
+            <div class="box01">
+              <strong>Ordered Products</strong>
+              <div class="box03">{{ posts[0].ContractInfo.OrderedProducts }}</div>
+            </div>
+          </div>
+
+          <div style="clear:both;" v-if="theyaremessages"></div>
+
+           <div class="box">
+            <div>
+              <strong>Total Price</strong>
+              <div class="box03">{{ posts[0].ContractInfo.TotalPrice }} €</div>
+            </div>
+            <div class="box01">
+              <strong>Permision to Publish</strong>
+              <div class="box03"><span v-if="posts[0].ContractInfo.PermisionPublic">Yes</span><span v-else>No</span></div>
+            </div>
+          </div>
+
+          <div class="box">
+            <div>
+              <strong>Deposit to Pay</strong>
+              <div class="box03">{{ posts[0].ContractInfo.DepositToPay }} €</div>
+            </div>
+            <div class="box01">
+              <strong>Deposit already payed?</strong>
+              <div class="box03"><span v-if="posts[0].ContractInfo.DepositPayed">Yes</span><span v-else>No</span></div>
+            </div>
+          </div>         
+
         </div>
         
-      </div>      
-      <div style="clear:both; padding-top:20px;">
-        Contract information only visible if signed contract  
-      </div>
-      <div style="clear:both; margin-top:35px; " v-if="posts[0].AlreadyCustomer"> 
-        <h2>Contract Info</h2>      
-              <ul>
-                  <li><label>Contract Date: </label> <strong>{{ moment(posts[0].ContractInfo.ContractDate).format('DD.MM.YYYY') }}</strong></li>
-                  <li><label>Ordered Services: </label> <strong>{{ posts[0].ContractInfo.OrderedServices }}</strong></li>
-                  <li><label>Ordered Products: </label> <strong>{{ posts[0].ContractInfo.OrderedProducts }}</strong></li>
-                  <li><label>Number of Hours: </label> <strong>{{ posts[0].ContractInfo.NumberHours }} Hours</strong></li>
-                  <li><label>Total Price: </label> <strong>{{ posts[0].ContractInfo.TotalPrice }} €</strong></li>
-                  <li><label>Deposit to Pay: </label> <strong>{{ posts[0].ContractInfo.DepositToPay }} €</strong></li>
-                  <li><label>Deposit already Payed?: </label> <strong>{{ posts[0].ContractInfo.DepositPayed }}</strong></li>
-                  <li><label>Permision to public Fotos: </label> <strong>{{ posts[0].ContractInfo.PermisionPublic }}</strong></li>
-                  
-              </ul>  
-          <br>
+        </transition>
 
-        <li><label>Text, Comment: </label> <strong>{{ posts[0].Comments }}</strong></li>
+
+        <transition name="fade">
+        <div style="clear:both;" v-if="commentVisible">
+
+          <div class="box-title">
+            Comment
+          </div>
+
+          <div>
+            <div class="box-comment">
+              <div class="box02">{{ posts[0].Comments }}</div>
+            </div>
+          </div>
+        </div>
+        </transition>
+
       </div>
 
-</ul>   
-<br><br>
+      <div class="boxmessagecollumn" v-if="theyaremessages">
+        <div class="box-title">
+          Comunication with client
+        </div>
+        <div 
+          v-for="(postsmessage, index) in postsmessages"
+          v-bind:item="postsmessage"
+          v-bind:index="index"
+          v-bind:key="postsmessage._id"         
+        >
+            <transition name="fade">
+            <div>
+              <div class="boxmessage">
+                <div>
+                  <strong>Date</strong>
+                  <div class="box03">{{ moment(postsmessage.DateInfo).format('DD.MM.YYYY') }}</div>
+                </div>
+                <div>
+                  <strong>Who</strong>
+                  <div class="box03">{{ postsmessage.ContactPerson }}</div>
+                </div>
+                <div class="boxmessage-comment">
+                  <strong>Comment</strong>
+                  <div class="box02">{{ postsmessage.CommentsInfo }}</div>
+                </div>
+                <div style="clear:both;">
+                  <button class="btn" v-on:click="EditMessage">Edit Message</button> <button class="btn" v-on:click="show">Delete Message</button>
+                </div>
+              </div>
+              
+            </div>
+            </transition>
+        </div>
+      </div>
 
-      <button class="btn" v-on:click="EditPost">Edit</button><br><br>
-      <button class="btn" v-on:click="show">Delete</button>
+
+<br><br><br><br>
+    
+      <div style="clear:both;">
+        <button class="btn" v-on:click="EditPost">Edit</button> <button class="btn" v-on:click="show">Delete</button>
+      </div>
 
 
 
@@ -92,74 +230,115 @@ export default {
   name: 'ViewCostumer',
   data() {
     return {
+      contractVisible: false,
+      commentVisible: false,
       //moment:moment,
       //VModal:VModal,
       posts: {
         0: {
-          WeddingInfo:{
+          EventInfo:{
           },
-          BrideInfo: {
+          Client1Info: {
           },
-          GroomInfo: {
+          Client2Info: {
           },
           ContractInfo: {
           }
         }
       },
       posts2: [],
+      postsmessages: {
+        0: {}
+      }
+          ,
       error: '',
       counter: true,
       id: '',
       id2: '',
-      fecha: ''    
+      fecha: '',
+      theyaremessages: false    
     }
   },    
   async created() {
-    this.id = this.$route.query.id;
-    this.id2 = this.id;
+    if(this.$route.query.id){
+      this.id = this.$route.query.id;
+      this.id2 = this.id;
+    } else {
+      this.$router.push(`/`);
+    } 
+    //console.log('333333333');
 
     try {
-      this.posts = await PostService.getPosts(this.id);      
+      this.posts = await PostService.getPosts(this.id);  
+      if (this.posts[0].AlreadyCustomer){
+        this.contractVisible = true;
+      }
+
+      if (this.posts[0].Comments){
+        this.commentVisible = true;
+      }    
+      this.fecha = Date(this.posts[0].DateContact);
+      this.getMessages();
     } catch(err) {
       this.error = err.message;
     }
-    this.posts2 = await PostService.getPosts(); 
-
+    //this.posts2 = await PostService.getPosts();
     //console.log(date);
-    //if(this.posts){
-      this.fecha = Date(this.posts[0].DateContact);
-      //this.fecha.getDate(this.posts[0].DateContact);
+    //if(this.posts){    
+    //this.fecha.getDate(this.posts[0].DateContact);
     //}
   },
   
-  methods: {    
+  methods: {
+    // change Line Breaks with <br>
+    /*
+    LBreplace(){
+      let LBText;
+      LBText = this.posts[0].Comments.replace(/(?:\r\n|\r|\n)/g, '<br />');
+      console.log(LBText);
+      return LBText;
+    },*/
+
+    async getMessages() {
+      console.log('hay mensajes 1: ', this.theyaremessages );
+      try {
+        this.postsmessages = await PostService.getMessages(this.id);
+        console.log("JIDER: ", this.postsmessages);
+        //console.log("idCustomer: ", this.postsmessages[0].idCustomer);
+        //if(typeof this.postsmessages[0].idCustomer !== 'undefined')
+        if(this.postsmessages[0])
+        { 
+          console.log('yessssssss');
+          this.theyaremessages = true;
+        }
+        console.log('hay mensajes 2: ', this.theyaremessages );
+
+
+      } catch(err) {
+        this.error = err.message;
+      }
+
+    },
+
     async EditPost() {
       this.$router.push(`Edit?id=${this.id2}`);
     },
+
+    async EditMessage() {
+      this.$router.push(`insertinfo?id=${this.id2}`);
+    },
+
     async deletePost(){
       console.log("ID: ", this.id);
       await PostService.deletePost(this.id);
       this.posts = await PostService.getPosts();
       this.$router.push('\/');
-    }/*,
-    async formatCompat(date) {
-      //return 'halloeee';
-      //console.log(date);
-      if(date !== undefined){
-        let fecha = new Date(date)
-        return fecha.getDate();
-      }
-      //console.log(fecha);
-      //this.fecha = date;
-      //console.log(date.getDate());
-      //return date;
-      //fecha = this.posts[0].DateContact;
-      //let ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      //return fecha.getDate();
-      //return fecha.getDate() + ' ' + ms[fecha.getMonth()] + ' ' + fecha.getFullYear();
-    }*/,
+    },
+    //PopUp delete window
     show () {
-      //this.$modal.show('hello-world');
+      this.$modal.show('hello-world');
+      console.log('222222222222');
+
       this.$modal.show('dialog', {
         title: 'Delete Entry ' + this.posts[0].ownID,
         text: 'Are you sure you want to delete customer??? ' ,
@@ -181,6 +360,7 @@ export default {
       ]
       })
     },
+
     hide () {
       this.$modal.hide('dialog');
     }    
@@ -203,26 +383,50 @@ export default {
     font-size: 24px;
   }
 
- div.create-post {
-   text-align: left;
-   width: 60%;
-   /*max-width: 50%;*/
-   /*max-width: 50%;*/
-   /*max-width: 900px;*/
-   margin-left: auto;
-   margin-right: auto;   
- }
+  div.create-post {
+    text-align: left;
+    width: 100%;
+    /*max-width: 50%;*/
+    /*max-width: 50%;*/
+    /*max-width: 900px;*/
+    margin-left: auto;
+    margin-right: auto;   
+  }
 
 
   div.create-post label {
     color: #919191;
-    font-size: 16px;
+    font-size: 14px;
+  }
 
+
+  div.create-post ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;  
+    overflow: hidden;
+    /*background-color: #f1f1f1;    */
+  }
+
+  div.create-post li {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 2px;
+    /*background-color: #f1f1f1;*/
+    border: 1px solid #bdbdbd;
+    padding: 7px 8px;
+    color: #919191;
+    font-size: 14px;
+    white-space: pre-line;
+    width: 200px;
   }
 
   div.container {
     max-width: 100%;
-    margin: 0 auto;
+    margin: 0 ;
+    padding: 20px;
+    background-color:#f0f0f0;
   }
 
   p.error {
@@ -239,29 +443,132 @@ export default {
     color: #fff;
     padding: 7px 18px;
     cursor: pointer;
+    margin: 10px 5px 0 0 ;
   }
 
   .btn:hover{
     background: #666;
   }
 
-
-/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 1000px) {
-  .divTableHead, .divTableCell, .create-post input[type=submit] {
-    width: 100%;
-    margin-top: 0;
+  .barbtn{
+    font-size: 18px;
+    width: 95%;
+    height: 20px;
+    padding:7px 7px;
+    border: none;
+    background: rgb(214, 133, 133);
+    color: #fff;
+    cursor: pointer;
+    max-width: 1260px;
+    clear:both;
+    float:left;
+    margin-top:20px;
   }
 
-div.create-post {
-   text-align: left;
-   width: 100%;
-   /*max-width: 50%;*/
-   /*max-width: 50%;*/
-   /*max-width: 900px;*/
-   margin-left: auto;
-   margin-right: auto;   
- }
+  .barbtn:hover{
+    background: rgb(190, 106, 106);
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  .create-post {
+    text-align: left;
+    width: 100%;
+    /*max-width: 50%;*/
+    /*max-width: 50%;*/
+    /*max-width: 900px;*/
+    margin-left: auto;
+    margin-right: auto; 
+  }
+
+
+  .boxmessagecollumn{
+    float:left; 
+    margin-left:10px; 
+    background: rgb(218, 218, 218); 
+    padding: 0 10px 10px 10px;
+  }
+
+  .boxmessage{
+    float:left; 
+    min-width:270px; 
+    max-width:450px;
+    height:100%; 
+    border: 2px solid #d9d9d9; 
+    background-color:#fff; 
+    padding:12px; 
+    margin:5px 10px 10px 10px ;
+  }
+
+  .boxmessage-comment{
+    clear:both;
+    float:left;  
+    height:100%;  
+    background-color:#fff; 
+    white-space: pre-line;
+  }
+
+  .box {
+    float:left; 
+    width:270px; 
+    height:100%; 
+    border: 2px solid #d9d9d9; 
+    background-color:#fff; 
+    padding:12px; 
+    margin:5px 10px 10px 10px ;
+  }
+
+  .box01 {
+    margin-top:10px;
+  }
+
+  .box02 {
+    border: 1px solid #bdbdbd; 
+    padding:5px; 
+    width:95%;
+  }
+
+  .box03 {
+    border: 1px solid #bdbdbd; 
+    padding:5px; 
+    width:95%;
+    height:23px;
+    margin-bottom: 10px;
+  }
+
+  .box-title {
+    clear:both;
+    margin:15px 0 0 10px;
+    color: #919191;
+    font-size: 22px;
+  }
+
+  .box-comment{
+    clear:both;
+    float:left;  
+    height:100%; 
+    border: 2px solid #d9d9d9; 
+    background-color:#fff; 
+    padding:12px; 
+    margin:10px; 
+    width:95%;
+    max-width: 1225px;
+    white-space: pre-line;
+  }
+
+
+
+  /* Responsive layout - when the screen is less than 1000px wide, make the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 1000px) {
+    .divTableHead, .divTableCell, .create-post  {
+      width: 100%;
+      margin-top: 0;
+    }
 
 }
 

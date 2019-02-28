@@ -1,97 +1,269 @@
 <template>
 
   <div class="container">
-    <h1>Edit Couple Information</h1>
+    <h1>Edit Information</h1>
     <div class="create-post">   
 
       <label>Own ID</label><br>
       <input type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
 
-      <label>Actualy activ</label><br>
-      Yes<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=true checked> 
-      Not<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=false><br>
-      <br><br>
+      <div>
 
-      <label>Contact Date</label><br>
-      {{posts[0].DateContact}}<br>
-      <date-picker v-model="posts[0].DateContact" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
-      <label>Source</label><br>
-      <input type="text" v-model="posts[0].Source" placeholder="Introduce the source"><br>
+        <div style="float:left;">
+          <div class="box-title">
+            Client
+          </div>
+          <div class="box">
+            <div>
+              <strong>Client Name</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client1Info.Client1Name" placeholder="Name">
+              </div>
+            </div>
+            <div>
+              <strong>Client Surname</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client1Info.Client1Surname" placeholder="Surname">
+              </div>
+            </div>
+            <div>
+              <strong>Client Telephon Number</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client1Info.Client1Tel" placeholder="Telefon Number">
+              </div>
+            </div>
+            <div>
+              <strong>Client Email</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client1Info.Client1Email" placeholder="Email"> 
+              </div>
+            </div>
+            <div>
+              <strong>Adress</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Address" placeholder="Address"><br><br>
+              </div>
+            </div>
+          </div>
+        </div> 
 
-      <label>Wedding Info</label><br>
-      <div class="subFields">
-        <label>Date</label><br>
-        <date-picker v-model="posts[0].WeddingInfo.DateWedding" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
-        <label>Location</label>
-        <input type="text" v-model="posts[0].WeddingInfo.WeddingLocation" placeholder="Wedding Location">
+        <div style="float:left;">
+          <div class="box-title">
+            Client 2
+          </div>
+          <div class="box">
+            <div>
+              <strong>Client 2 Name</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client2Info.Client2Name" placeholder="Name">
+              </div>
+            </div>
+            <div>
+              <strong>Client 2 Surname</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client2Info.Client2Surname" placeholder="Surname">
+              </div>
+            </div>
+            <div>
+              <strong>Client 2 Telephon Number</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client2Info.Client2Tel" placeholder="Telefon Number">
+              </div>
+            </div>
+            <div>
+              <strong>Client 2 Email</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Client2Info.Client2Email" placeholder="Email"> 
+              </div>
+            </div>
+          </div>
+        </div> 
+
+        <div style="float:left;">
+          <div class="box-title">
+            Event Information
+          </div>
+          <div class="box">
+            <div>
+              <strong>Contact Date</strong>
+              <div class="box03">
+                <date-picker v-model="posts[0].DateContact" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              </div>
+            </div>
+            <div>
+              <strong>Event Date</strong>
+              <div class="box03">
+                <date-picker v-model="posts[0].EventInfo.DateEvent" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              </div>
+            </div>
+            <div>
+              <strong>Event Location</strong>
+              <div class="box03"><input type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+            </div>
+          </div>          
+        </div> 
+
+        <div style="float:left;">
+          <div class="box-title">
+            Client Status
+          </div>
+          <div class="box">
+            <div>
+              <strong>Actualy Activ</strong>
+              <div class="box03">
+                Yes<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=true checked> 
+                Not<input class="radio" type="radio" name="ActivCustomer" v-model="posts[0].ActivCustomer" v-bind:value=false>
+              </div>
+            </div>
+            <div>
+              <strong>Already Customer</strong>
+              <div class="box03">
+                <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].AlreadyCustomer"> 
+              </div>
+            </div>
+            <div>
+              <strong>Source</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].Source" placeholder="Introduce the source">
+              </div>
+            </div>
+
+          </div>          
+        </div> 
+
       </div>
+
+
+      <div style="clear:both;"></div>
+
       
-      <label>Bride Info</label><br>
-      <div class="subFields">
-        <label>Bride Name</label><br>
-        <input type="text" v-model="posts[0].BrideInfo.BrideName" placeholder="Bride Name"><br> 
-        <label>Bride Surname</label><br>
-        <input type="text" v-model="posts[0].BrideInfo.BrideSurname" placeholder="Bride Surname"><br>
-        <label>Bride Telefon Number</label><br>
-        <input type="text" v-model="posts[0].BrideInfo.BrideTel" placeholder="Bride Telefon Number"><br>
-        <label>Bride EMail</label><br>
-        <input type="text" v-model="posts[0].BrideInfo.BrideEmail" placeholder="Bride Email"><br>
-      </div>
-      <label>Groom Info</label><br>
-      <div class="subFields">
-        <label>Groom Name</label><br>
-        <input type="text" v-model="posts[0].GroomInfo.GroomName" placeholder="Bride Name"><br> 
-        <label>Groom Surname</label><br>
-        <input type="text" v-model="posts[0].GroomInfo.GroomSurname" placeholder="Groom Surname"><br>
-        <label>Groom Telefon Number</label><br>
-        <input type="text" v-model="posts[0].GroomInfo.GroomTel" placeholder="Groom Telefon Number"><br>
-        <label>Groom EMail</label><br>
-        <input type="text" v-model="posts[0].GroomInfo.GroomEmail" placeholder="Groom Email"><br>
-      </div>
-      <label>Couple Address</label><br>
-      <input type="text" v-model="posts[0].CoupleAddress" placeholder="Couple Address"><br><br>
-
       <div id="app" >        
         <div class="barbtn" v-on:click="contractVisible = !contractVisible">
-          <span v-if="contractVisible">- View Contract fields?</span>
+          <span v-if="contractVisible || posts[0].AlreadyCustomer">- View Contract fields?</span>
           <span v-else>+ View Contract fields?</span>            
         </div>
-
         <transition name="fade">
-        <div v-if="contractVisible" >    
-          <br>
-          <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].AlreadyCustomer"> Check to fill Contract information
-          <br><br>
+        <div v-if="contractVisible || posts[0].AlreadyCustomer" >
 
-            <label>Contract Info</label><br>
-              <div class="subFields">
-                <label>Contract Date</label><br>
-                <date-picker v-model="posts[0].ContractInfo.ContractDate" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br><br>
-                <label>Ordered Services</label><br>
-                <input type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services"><br>
-                <label>Ordered Products</label><br>
-                <input type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products"><br>
-                <label>Number of Hours</label><br>
-                <input type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
-                <label>Total Price</label><br>
-                <input type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price"><br>
-                <label>Deposit to Pay</label><br>
-                <input type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay"><br>
-                <label>Deposit already Payed?</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.DepositPayed"><br>
-                <label>Permision to public Fotos</label><input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.PermisionPublic"><br>
-                      
+        <div style="float:left;">
+          <div class="box-title">
+            Event Information
+          </div>
+          <div class="box">
+            <div>
+              <strong>Already Customer</strong>
+              <div class="box03">
+                <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].AlreadyCustomer"> 
               </div>
+            </div>
+            <div>
+              <strong>Contract Date</strong>
+              <div class="box03">
+                <date-picker v-model="posts[0].ContractInfo.ContractDate" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              </div>
+            </div>
+            <div>
+              <strong>Event Date</strong>
+              <div class="box03">
+                <date-picker v-model="posts[0].EventInfo.DateEvent" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              </div>
+            </div>
+            <div>
+              <strong>Event Location</strong>
+              <div class="box03"><input type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+            </div>
+          </div>          
+        </div> 
+
+        <div style="float:left;">
+          <div class="box-title">
+            Contracted Services
+          </div>
+          <div class="box">
+            <div>
+              <strong>Ordered Services</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services">
+              </div>
+            </div>
+            <div>
+              <strong>Ordered Products</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products">
+              </div>
+            </div>
+            <div>
+              <strong>Number of Hours</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
+              </div>
+            </div>
+            <div>
+              <strong>Permision to public Fotos</strong>
+              <div class="box03">
+               <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.PermisionPublic">
+              </div>
+            </div>
+          </div>          
+        </div> 
+
+        <div style="float:left;">
+          <div class="box-title">
+            Payment information
+          </div>
+          <div class="box">
+            <div>
+              <strong>Total Price</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price">
+              </div>
+            </div>
+            <div>
+              <strong>Deposit to Pay</strong>
+              <div class="box03">
+                <input type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay">
+              </div>
+            </div>
+            <div>
+              <strong>Deposit already Payed?</strong>
+              <div class="box03">
+                <input class="checkbox" type="checkbox" id="checkbox" v-model="posts[0].ContractInfo.DepositPayed">
+              </div>
+            </div>
+
+          </div>          
+        </div> 
+
+
 
         </div>
         </transition>
+
+
+        <div style="clear:both;">
+
+          <div class="box-title">
+            Comment
+          </div>
+
+          <div>
+            <div class="box-comment">
+              <div class="box02">
+                <textarea name="comment" form="usrform"  v-model="posts[0].Comments" placeholder="Here some coments">Enter text here...</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
-     <br><br>
-      <label>Text, Comment</label><br>
-      <textarea name="comment" form="usrform"  v-model="posts[0].Comments" placeholder="Here some coments">Enter text here...</textarea>
 
+      <div style="clear:both;"></div>
 
-      <button class="btn" v-on:click="updatePost">Post!</button>
+      <button style="margin:30px 0 50px 0;" class="btn" v-on:click="updatePost">Post!</button>
     </div>
+  
     <p class="error" v-if="error">{{ error }}</p>
 
   </div>
@@ -113,11 +285,11 @@ export default {
       contractVisible: false,
       posts: {
         0: {
-          WeddingInfo:{
+          EventInfo:{
           },
-          BrideInfo: {
+          Client1Info: {
           },
-          GroomInfo: {
+          Client2Info: {
           },
           ContractInfo: {
           }
@@ -134,14 +306,19 @@ export default {
   async created() {    
     if(this.$route.query.id){
       this.id = this.$route.query.id;
+    } else {
+      this.$router.push(`/`);
     }    
+
+    //console.log('id', this.id);
+
     if(this.id){
       try {
         this.posts = await PostService.getPosts(this.id);
       } catch(err) {
         this.error = err.message;
       }
-      console.log('Activ?:', this.posts[0].ActivCustomer);
+      //console.log('Activ?:', this.posts[0].ActivCustomer);
       if(typeof this.posts[0].ActivCustomer === 'undefined') this.posts[0].ActivCustomer = true;
       //console.log(this.posts);
     }/*else{
@@ -191,13 +368,14 @@ export default {
   /*div.create-post {*/
     /*float: left;*/
     width: 95%;
-    height: 25px;
-    margin: 5px 0 20px 0;
-    padding:5px;
-    border: 1px solid #ff8c8c;
+    /*height: 25px;
+    margin: 5px 0 20px 0;*/
+    padding: 5px;
+    border: 1px solid #bdbdbd; 
     background-color: #f7f7f7;
     color: #6e6e6e;
     font-size: 16px;
+    max-width: 1250px;
      
   }
 
@@ -208,11 +386,11 @@ export default {
     height: 150px;
     margin: 5px 0 20px 0;
     padding:5px;
-    border: 1px solid #ff8c8c;
+    border: 1px solid #d9d9d9;
     background-color: #f7f7f7;
     color: #6e6e6e;
     font-size: 16px;
-     
+    max-width: 1250px;    
   }
 
   div.create-post date-picker{
@@ -227,37 +405,37 @@ export default {
      
   }
 
-/* Create a custom checkbox */
-div.create-post .checkbox {
-  /*position: absolute;*/  
-  /*top: 0;
-  left: 0;*/
-  height: 15px;
-  width: 15px;
-  margin-left: 15px;
-  /*background-color: #eee;*/
-}
+  /* Create a custom checkbox */
+  div.create-post .checkbox {
+    /*position: absolute;*/  
+    /*top: 0;
+    left: 0;*/
+    height: 15px;
+    width: 15px;
+    margin-left: 15px;
+    /*background-color: #eee;*/
+  }
 
-/* Create a custom radio buttom */
-div.create-post .radio{
-  /*position: absolute;*/  
-  /*top: 0;
-  left: 0;*/
-  height: 0px;
-  width: 25px;
-  margin-right: 25px;
-  /*background-color: #eee;*/
-}
+  /* Create a custom radio buttom */
+  div.create-post .radio{
+    /*position: absolute;*/  
+    /*top: 0;
+    left: 0;*/
+    height: 0px;
+    width: 25px;
+    margin-right: 25px;
+    /*background-color: #eee;*/
+  }
 
   div.create-post input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: rgb(192, 192, 192);
-  opacity: 1; /* Firefox */
-}
+    color: rgb(192, 192, 192);
+    opacity: 1; /* Firefox */
+  }
 
   div.create-post textarea::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: rgb(192, 192, 192);
-  opacity: 1; /* Firefox */
-}
+    color: rgb(192, 192, 192);
+    opacity: 1; /* Firefox */
+  }
 
   div.create-post label {
     color: #919191;
@@ -266,8 +444,11 @@ div.create-post .radio{
   }
 
   div.container {
-    max-width: 1000px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0 ;
+    padding: 20px;
+    background-color:#f0f0f0;
+    
   }
 
   p.error {
@@ -297,9 +478,10 @@ div.create-post .radio{
     padding:10px;
     display: inline-block;
     border: none;
-    background: rgb(148, 67, 67);
+    background: rgb(214, 133, 133);
     color: #fff;
     cursor: pointer;
+    max-width: 1240px;
   }
 
   .barbtn:hover{
@@ -307,14 +489,59 @@ div.create-post .radio{
   }
 
 
-.subFields{
-  margin: 10px 0 10px 25px;
-}
+  .subFields{
+    margin: 10px 0 10px 25px;
+  }
 
-div.subFields label{
-  font-size: 16px;
-  color: #0a009b
-}
+  div.subFields label{
+    font-size: 16px;
+    color: #0a009b
+  }
+
+  .box {
+    float:left; 
+    width:270px; 
+    height:100%; 
+    border: 2px solid #d9d9d9; 
+    background-color:#fff; 
+    padding:12px; 
+    margin:5px 10px 10px 10px ;
+  }
+
+  .box01 {
+    margin-top:0px;
+  }
+
+  .box02 {
+    padding:5px; 
+    width:95%;
+  }
+
+  .box03 {
+    padding:5px; 
+    width:95%;
+    height:23px;
+    margin-bottom: 20px;
+  }
+
+  .box-title {
+    margin:30px 0 0 10px;
+    color: #919191;
+    font-size: 22px;
+  }
+
+  .box-comment{
+    clear:both;
+    float:left;  
+    height:100%; 
+    border: 2px solid #d9d9d9; 
+    background-color:#fff; 
+    padding:12px; 
+    margin:10px; 
+    width:95%;
+    max-width: 1225px;
+    white-space: pre-line;
+  }
 
 
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */

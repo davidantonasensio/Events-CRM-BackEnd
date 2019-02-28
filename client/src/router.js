@@ -26,5 +26,11 @@ export default new Router({
             name:'edit',
             component: () => import('./views/Edit.vue')            
         }
+        ,
+        {
+            path:'/insertinfo',
+            name:'insertinfo',
+            component: () => import('./views/InsertInfo.vue')            
+        }
     ]
 })

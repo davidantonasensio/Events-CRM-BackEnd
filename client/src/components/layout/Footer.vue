@@ -2,8 +2,10 @@
   <header class="footer">
     <h1>Footer</h1>
     <div id="nav">
-      <router-link to="/imprint">Imprint</router-link> |
-      <router-link to="/dataprotection">Data Protection</router-link>
+      <ul>
+        <li><router-link to="/imprint">Imprint</router-link></li>
+        <li><router-link to="/dataprotection">Data Protection</router-link></li>
+      </ul>
     </div>
   </header>
 </template>
@@ -16,11 +18,38 @@ export default {
 
 <style scoped>
   .footer {
-    background: rgb(155, 155, 155);
-    color: #fff;
-    text-align: center;
+    background: rgb(112, 112, 112);
+    color: rgb(160, 160, 160);
     padding: 10px;
-    margin-top: 100px;
+    text-align:center;
+    height:100%;
+  }
+
+  .footer h1{
+    font-size: 18px;
+  }
+
+  .footer ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;    
+    font-weight: 600;
+    font-size: 12px;
+    /*background-color: #f1f1f1;    */
+  }
+
+  .footer li a{
+    display: block;
+    color: rgb(226, 226, 226);
+    padding: 8px 16px;
+    text-decoration: none;
+    text-align:left;
+  }
+
+  .footer li a:hover{
+    background-color: #555;
+    color: white;
   }
 
   .footer a {

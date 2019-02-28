@@ -3,9 +3,10 @@ const mongodb = require('mongodb');
 
 const router = express.Router();
 
+
 // Get Posts
 router.get('/', async (req, res) => {
-  const posts = await loadPostsCollection();
+  const posts = await loadPostsCollection('events', 'clients');
   //res.send('activ: ' + req.query.activ + ', customer: ' + req.query.customer); 
   
   let lenghtYearsArray
@@ -18,12 +19,11 @@ router.get('/', async (req, res) => {
   }
 
 
-
-  let JsonArray1 = [];
-  let JsonArray2 = [];
-
+  
 
   // search for one entry by its id
+  let JsonArray1 = [];
+  let JsonArray2 = [];
   if(typeof req.query.id !== 'undefined' &&  req.query.id !== 'false'){
     //res.send("9999999");
     JsonArray1 = await posts.find({_id: new mongodb.ObjectID(req.query.id) }).toArray() 
@@ -36,11 +36,11 @@ router.get('/', async (req, res) => {
       if(req.query.customer === 'true'){ customer = true} else {customer=false}
 
 
-      // for the selected Years
+      // Search for entries for the selected Years
       if(lenghtYearsArray !== 0){
         for (i = 0; i < lenghtYearsArray; i++) {
           JsonArray2 = await posts.find({
-            "WeddingInfo.DateWedding": {
+            "EventInfo.DateEvent": {
               $gte: req.query.Years[i] + "-01-01T00:00:00.000Z",
               $lte: req.query.Years[i] + "-12-31T00:00:00.000Z"
             },
@@ -60,12 +60,12 @@ router.get('/', async (req, res) => {
       }
 
 
-  // Search for selectios of Years, not is activ or is customer are selected
+  // Search for selectios of Years, is activ or is customer are not selected
   } else if(lenghtYearsArray !== 0){
       //res.send("77777777777");
       for (i = 0; i < lenghtYearsArray; i++) {
         JsonArray2 = await posts.find({
-          "WeddingInfo.DateWedding": {
+          "EventInfo.DateEvent": {
             $gte: req.query.Years[i] + "-01-01T00:00:00.000Z",
             $lte: req.query.Years[i] + "-12-31T00:00:00.000Z"
           }
@@ -82,13 +82,28 @@ router.get('/', async (req, res) => {
   res.send(JsonArray1);
 
 });
+// End of Get Posts
+
+
+// Get Posts
+router.get('/messages', async (req, res) => {
+  //res.send("666666666666: " + req.body.id);
+  const posts = await loadPostsCollection('events', 'infos');
+
+  Messages = await posts.find({
+    idCustomer: req.query.ClientID
+  }).toArray();
+
+  res.send(Messages);
+
+});
 
 
 
-// Add Post
+// Add Post with customer information
 router.post('/', async (req, res) => {
   let inserted = '';
-  const posts = await loadPostsCollection();
+  const posts = await loadPostsCollection('events', 'clients');
 
     await posts.insertOne({
       ownID: req.body.post[0].ownID,      
@@ -96,21 +111,21 @@ router.post('/', async (req, res) => {
       AlreadyCustomer: req.body.post[0].AlreadyCustomer,
       DateContact: req.body.post[0].DateContact,
       Source: req.body.post[0].Source,
-      WeddingInfo: { 
-                    DateWedding: req.body.post[0].WeddingInfo.DateWedding, 
-                    WeddingLocation: req.body.post[0].WeddingInfo.WeddingLocation
+      EventInfo: { 
+                    DateEvent: req.body.post[0].EventInfo.DateEvent, 
+                    EventLocation: req.body.post[0].EventInfo.EventLocation
                   },
-      BrideInfo: {
-                    BrideName: req.body.post[0].BrideInfo.BrideName, 
-                    BrideSurname: req.body.post[0].BrideInfo.BrideSurname, 
-                    BrideTel: req.body.post[0].BrideInfo.BrideTel, 
-                    BrideEmail: req.body.post[0].BrideInfo.BrideEmail},
-      GroomInfo: {
-                    GroomName: req.body.post[0].GroomInfo.GroomName, 
-                    GroomSurname: req.body.post[0].GroomInfo.GroomSurname, 
-                    GroomTel: req.body.post[0].GroomInfo.GroomTel, 
-                    GroomEmail: req.body.post[0].GroomInfo.GroomEmail},
-      CoupleAddress: req.body.post[0].CoupleAddress, 
+      Client1Info: {
+                    Client1Name: req.body.post[0].Client1Info.Client1Name, 
+                    Client1Surname: req.body.post[0].Client1Info.Client1Surname, 
+                    Client1Tel: req.body.post[0].Client1Info.Client1Tel, 
+                    Client1Email: req.body.post[0].Client1Info.Client1Email},
+      Client2Info: {
+                    Client2Name: req.body.post[0].Client2Info.Client2Name, 
+                    Client2Surname: req.body.post[0].Client2Info.Client2Surname, 
+                    Client2Tel: req.body.post[0].Client2Info.Client2Tel, 
+                    Client2Email: req.body.post[0].Client2Info.Client2Email},
+      Address: req.body.post[0].Address, 
       ContractInfo: {  
                     ContractDate: req.body.post[0].ContractInfo.ContractDate,
                     OrderedServices: req.body.post[0].ContractInfo.OrderedServices,
@@ -122,17 +137,18 @@ router.post('/', async (req, res) => {
                     PermisionPublic: req.body.post[0].ContractInfo.PermisionPublic  
       },
       Comments: req.body.post[0].Comments,
-    },function(error, response){    
+    },
+    function(error, response){    
 
-    if(error) {
-        console.log('Error occurred while inserting');
-        res.status(201).send(error);
-       // return 
-    } else {
-       console.log('inserted record', response.ops[0]);
-       res.status(201).send(response.ops[0]._id);
-      // return 
-    }
+      if(error) {
+          console.log('Error occurred while inserting');
+          res.status(201).send(error);
+        // return 
+      } else {
+        console.log('inserted record', response.ops[0]);
+        res.status(201).send(response.ops[0]._id);
+        // return 
+      }
 
     });
 
@@ -140,13 +156,45 @@ router.post('/', async (req, res) => {
 });
 
 
+// Add Post with customer information
+router.post('/insertinfo', async (req, res) => {
+  //res.send('id: ' + req.body.post.id);
+  //res.status(201).send(req.body.post.id);
+
+  const posts = await loadPostsCollection('events', 'infos');  
+  
+    await posts.insertOne({
+      idCustomer: req.body.post[0].id,
+      ownID: req.body.post[0].ownID,
+      ContactPerson: req.body.post[0].ContactPerson,
+      DateInfo: req.body.post[0].DateInfo,
+      CommentsInfo: req.body.post[0].CommentsInfo
+      //CommentsInfo: req.body.CommentsInfo,
+      //cojones: 'pues no'
+    },
+    function(error, response){
+
+      if(error) {
+          //console.log('Error occurred while inserting');
+          res.status(201).send(error);
+        // return 
+      } else {
+        //console.log('inserted record', response.ops[0]);
+        res.status(201).send(response.ops[0]._id);
+        //res.status(201).send('111111111111');
+        // return 
+      }
+
+    });
+  
+});
+
+
+
 // update Post
 router.post('/update', async (req, res) => {
   //res.status(201).send(req.body.post[0].ownID);
-  //res.status(201).send("lalalalalalalala");
-
-  
-  const posts = await loadPostsCollection();
+  const posts = await loadPostsCollection('events', 'clients');
 
     await posts.updateOne({
       "_id": new mongodb.ObjectID(req.body.post[0].id)
@@ -157,21 +205,21 @@ router.post('/update', async (req, res) => {
       AlreadyCustomer: req.body.post[0].AlreadyCustomer,
       DateContact: req.body.post[0].DateContact,
       Source: req.body.post[0].Source,
-      WeddingInfo: { 
-                    DateWedding: req.body.post[0].WeddingInfo.DateWedding, 
-                    WeddingLocation: req.body.post[0].WeddingInfo.WeddingLocation
+      EventInfo: { 
+                    DateEvent: req.body.post[0].EventInfo.DateEvent, 
+                    EventLocation: req.body.post[0].EventInfo.EventLocation
                   },
-      BrideInfo: {
-                    BrideName: req.body.post[0].BrideInfo.BrideName, 
-                    BrideSurname: req.body.post[0].BrideInfo.BrideSurname, 
-                    BrideTel: req.body.post[0].BrideInfo.BrideTel, 
-                    BrideEmail: req.body.post[0].BrideInfo.BrideEmail},
-      GroomInfo: {
-                    GroomName: req.body.post[0].GroomInfo.GroomName, 
-                    GroomSurname: req.body.post[0].GroomInfo.GroomSurname, 
-                    GroomTel: req.body.post[0].GroomInfo.GroomTel, 
-                    GroomEmail: req.body.post[0].GroomInfo.GroomEmail},
-      CoupleAddress: req.body.post[0].CoupleAddress, 
+      Client1Info: {
+                    Client1Name: req.body.post[0].Client1Info.Client1Name, 
+                    Client1Surname: req.body.post[0].Client1Info.Client1Surname, 
+                    Client1Tel: req.body.post[0].Client1Info.Client1Tel, 
+                    Client1Email: req.body.post[0].Client1Info.Client1Email},
+      Client2Info: {
+                    Client2Name: req.body.post[0].Client2Info.Client2Name, 
+                    Client2Surname: req.body.post[0].Client2Info.Client2Surname, 
+                    Client2Tel: req.body.post[0].Client2Info.Client2Tel, 
+                    Client2Email: req.body.post[0].Client2Info.Client2Email},
+      Address: req.body.post[0].Address, 
       ContractInfo: {  
                     ContractDate: req.body.post[0].ContractInfo.ContractDate,
                     OrderedServices: req.body.post[0].ContractInfo.OrderedServices,
@@ -204,7 +252,7 @@ router.delete('/:id', async (req, res) => {
 //router.delete('/', async (req, res) => {
   //res.status(201).send("BLABLALBALBALBABLA");
 
-  const posts = await loadPostsCollection();
+  const posts = await loadPostsCollection('events', 'clients');
   await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) })
   .then(result => {
     res.status(201).send();
@@ -218,7 +266,7 @@ router.delete('/:id', async (req, res) => {
 
 
 
-async function loadPostsCollection() {
+async function loadPostsCollection(db='events', collection='clients') {
   const client = await mongodb.MongoClient.connect
   //('mongodb://192.168.2.65:27017/wedding-CRM',
   ('mongodb://192.168.2.65:27017/events',
@@ -228,7 +276,7 @@ async function loadPostsCollection() {
   );
 
   //return client.db('wedding-CRM').collection('posts');
-  return client.db('events').collection('clients');
+  return client.db(db).collection(collection);
 }
 
 module.exports = router;
