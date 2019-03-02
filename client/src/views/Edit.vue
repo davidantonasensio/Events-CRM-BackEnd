@@ -335,10 +335,10 @@ export default {
   methods: {
     async updatePost() {
         //this.id = this.$route.query.id;
+        console.log('this.posts', this.posts);
         this.posts[0].id = this.$route.query.id;
-      await PostService.updatePost(
-        this.posts
-        );
+        
+        await PostService.updatePost( this.posts, '' );
         this.$router.push(`ViewCostumer?id=${this.id}`);
       //this.posts = await PostService.getPosts();
     }

@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <v-dialog/>
-    <h1>List of Customers</h1>
-
-    <div class="search">
+    <h1>List of Customers</h1>    
+      
+    
+    <div class="search">     
       <div class="search1">
         <p class="error" v-if="error">{{ error }}</p>
         <label>Already Customer</label> <input class="checkbox" type="checkbox" id="checkbox" v-on:change="Paramsschange" v-model="AlreadyCustomer"> | 
@@ -20,7 +21,7 @@
         <span class="checkbox">  {{Year}} </span> <input type="checkbox" v-on:change="Paramsschange" :value="Year" v-model="YearChoosed">  </span>
       </div>
     </div>
-
+    
 
     <div class="posts-container">
       <div class="divTable blueTable">
@@ -40,37 +41,36 @@
             <div class="divTableHead">Total Price</div>
           </div>
         </div>
-      <div class="divTableBody post"
-        v-for="(post, index) in posts"
-        v-bind:item="post"
-        v-bind:index="index"
-        v-bind:key="post._id"
-        v-on:dblclick="viewPost(post._id)"
-      >
-        
-        <div class="divTableRow"> 
-          <div class="divTableCell"><button class="btn" v-on:click="show(post._id, post.ownID)">Delete</button></div>         
-          <div class="divTableCell"><button class="btn" v-on:click="$router.push('Edit?id=' + post._id)">Edit</button></div>  
-          <div class="divTableCell"><button class="btn" v-on:click="$router.push('insertinfo?id=' + post._id)">Info</button></div>        
-          <div class="divTableCell">{{ post.ownID }}</div>
-          <div class="divTableCell" v-if="moment(post.EventInfo.DateEvent, moment.ISO_8601, true).isValid()">{{ moment(post.EventInfo.DateEvent).format('DD.MM.YYYY') }}</div>
-          <div class="divTableCell" v-else>{{ post.EventInfo.DateEvent }}</div>
-          <div class="divTableCell">{{ post.EventInfo.EventLocation}}</div>
-          <div class="divTableCell">{{ post.Client1Info.Client1Name + ' ' +  post.Client1Info.Client1Surname}}</div>
-          <div class="divTableCell">{{ post.Client2Info.Client2Name + ' ' +  post.Client2Info.Client2Surname}}</div>
-          <div class="divTableCell" v-if="moment(post.DateContact, moment.ISO_8601, true).isValid()">{{ moment(post.DateContact).format('DD.MM.YYYY') }}</div>
-          <div class="divTableCell" v-else>{{ post.DateContact }}</div>
-          <div class="divTableCell" v-if="moment(post.ContractInfo.ContractDate, moment.ISO_8601, true).isValid()">{{ moment(post.ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
-          <div class="divTableCell" v-else>{{ post.ContractInfo.ContractDate }}</div>
-          <div class="divTableCell">{{ post.ContractInfo.NumberHours}}</div>
-          <div class="divTableCell">{{ post.ContractInfo.TotalPrice}}€</div>
-        </div>
-    </div>
-</div>
-
-      </div>
-    </div>
+        <div class="divTableBody post"
+          v-for="(post, index) in posts"
+          v-bind:item="post"
+          v-bind:index="index"
+          v-bind:key="post._id"
+          v-on:dblclick="viewPost(post._id)"
+        >
+          
+          <div class="divTableRow"> 
+            <div class="divTableCell"><button class="btn" v-on:click="show(post._id, post.ownID)">Delete</button></div>         
+            <div class="divTableCell"><button class="btn" v-on:click="$router.push('Edit?id=' + post._id)">Edit</button></div>  
+            <div class="divTableCell"><button class="btn" v-on:click="$router.push('insertinfo?id=' + post._id)">Message</button></div>        
+            <div class="divTableCell">{{ post.ownID }}</div>
+            <div class="divTableCell" v-if="moment(post.EventInfo.DateEvent, moment.ISO_8601, true).isValid()">{{ moment(post.EventInfo.DateEvent).format('DD.MM.YYYY') }}</div>
+            <div class="divTableCell" v-else>{{ post.EventInfo.DateEvent }}</div>
+            <div class="divTableCell">{{ post.EventInfo.EventLocation}}</div>
+            <div class="divTableCell">{{ post.Client1Info.Client1Name + ' ' +  post.Client1Info.Client1Surname}}</div>
+            <div class="divTableCell">{{ post.Client2Info.Client2Name + ' ' +  post.Client2Info.Client2Surname}}</div>
+            <div class="divTableCell" v-if="moment(post.DateContact, moment.ISO_8601, true).isValid()">{{ moment(post.DateContact).format('DD.MM.YYYY') }}</div>
+            <div class="divTableCell" v-else>{{ post.DateContact }}</div>
+            <div class="divTableCell" v-if="moment(post.ContractInfo.ContractDate, moment.ISO_8601, true).isValid()">{{ moment(post.ContractInfo.ContractDate).format('DD.MM.YYYY') }}</div>
+            <div class="divTableCell" v-else>{{ post.ContractInfo.ContractDate }}</div>
+            <div class="divTableCell">{{ post.ContractInfo.NumberHours}}</div>
+            <div class="divTableCell">{{ post.ContractInfo.TotalPrice}}€</div>
+          </div>
+        </div>  
+      </div>      
+    </div>  
   </div>
+
 </template>
 
 <script>
@@ -174,7 +174,7 @@ export default {
     */
 
     async deletePost(id){
-      await PostService.deletePost(id);
+      await PostService.deletePost(id, '');
       this.posts = await PostService.getPosts();
       //this.$router.push('\/');
     },
@@ -188,7 +188,7 @@ export default {
       
       this.$modal.show('dialog', {
         title: 'Delete Entry ' + ownID,
-        text: 'Are you sure you want to delete customer???',
+        text: 'Are you sure you want to delete customer and all its messages???',
         buttons: [
           {
             title: 'Delete',
@@ -216,7 +216,7 @@ export default {
 
     async Paramsschange() {
       try {
-        //console.log(this.YearChoosed);
+        //console.log('this.AlreadyCustomer: ',this.AlreadyCustomer);
         this.posts = await PostService.getPosts(false, this.ActivCustomer, this.AlreadyCustomer, this.YearChoosed);
         this.posts.sort(this.compare);
         //console.log(this.posts);
@@ -245,7 +245,6 @@ export default {
   div.search .search2 {
     float:left; 
   }
-
 
   .v--modal-overlay {
     background-color: rgba(255, 0, 0, .1);
@@ -296,79 +295,86 @@ export default {
   width: 100%;
   text-align: left;
   border-bottom: 1px solid rgb(226, 226, 226);
-}
+  }
 
-.divTable.blueTable .divTableCell, .divTable.blueTable .divTableHead {
-  padding: 3px 3px;
-  border-bottom: 1px solid rgb(226, 226, 226);
-}
-.divTable.blueTable .divTableBody .divTableCell {
-  font-size: 13px;
-  background: #ffffff;
-}
-.divTable.blueTable .divTableRow:nth-child(even) {
-  /*background: #D0E4F5;*/
-}
+  .divTable.blueTable .divTableCell, .divTable.blueTable .divTableHead {
+    padding: 3px 3px;
+    border-bottom: 1px solid rgb(226, 226, 226);
+  }
+  .divTable.blueTable .divTableBody .divTableCell {
+    font-size: 13px;
+    background: #ffffff;
+  }
+  .divTable.blueTable .divTableRow:nth-child(even) {
+    /*background: #D0E4F5;*/
+  }
 
-.divTable.blueTable .divTableHeading {
-  background: #ffffff;
-  /*
-  background: -moz-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
-  background: -webkit-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
-  background: linear-gradient(to bottom, #949494 0%, #7e7e7e 66%, #707070 100%);
-  border-bottom: 2px solid #444444;
-  */
-}
+  .divTable.blueTable .divTableHeading {
+    background: #ffffff;
+    /*
+    background: -moz-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
+    background: -webkit-linear-gradient(top, #949494 0%, #7e7e7e 66%, #707070 100%);
+    background: linear-gradient(to bottom, #949494 0%, #7e7e7e 66%, #707070 100%);
+    border-bottom: 2px solid #444444;
+    */
+  }
 
-.divTable.blueTable .divTableHeading .divTableHead {
-  font-size: 15px;
-  /*font-weight: bold;*/
-  color: rgb(0, 0, 0);
-  /*border-left: 2px solid rgb(212, 212, 212);*/
-}
+  .divTable.blueTable .divTableHeading .divTableHead {
+    font-size: 15px;
+    /*font-weight: bold;*/
+    color: rgb(0, 0, 0);
+    /*border-left: 2px solid rgb(212, 212, 212);*/
+  }
 
-.divTable.blueTable .divTableHeading .divTableHead:first-child {
-  /*border-left: none;*/
-}
+  .divTable.blueTable .divTableHeading .divTableHead:first-child {
+    /*border-left: none;*/
+  }
 
-.blueTable .tableFootStyle {
-  /*
-  font-size: 14px;
-  font-weight: bold;
-  color: #FFFFFF;
-  background: #D0E4F5;
-  background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
-  background: -webkit-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
-  background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
-  border-top: 2px solid #444444;
-  */
-}
-.blueTable .tableFootStyle {
-  font-size: 14px;
-}
-.blueTable .tableFootStyle .links {
-	 text-align: right;
-}
-.blueTable .tableFootStyle .links a{
-  display: inline-block;
-  background: #1C6EA4;
-  color: #FFFFFF;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-.blueTable.outerTableFooter {
-  border-top: none;
-}
-.blueTable.outerTableFooter .tableFootStyle {
-  padding: 3px 5px; 
-}
+  .blueTable .tableFootStyle {
+    /*
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #D0E4F5;
+    background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    background: -webkit-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    border-top: 2px solid #444444;
+    */
+  }
+  .blueTable .tableFootStyle {
+    font-size: 14px;
+  }
+  .blueTable .tableFootStyle .links {
+    text-align: right;
+  }
+  .blueTable .tableFootStyle .links a{
+    display: inline-block;
+    background: #1C6EA4;
+    color: #FFFFFF;
+    padding: 2px 8px;
+    border-radius: 5px;
+  }
+  .blueTable.outerTableFooter {
+    border-top: none;
+  }
+  .blueTable.outerTableFooter .tableFootStyle {
+    padding: 3px 5px; 
+  }
 
-/* DivTable.com */
-.divTable{ display: table; }
-.divTableRow { display: table-row; }
-.divTableCell, .divTableHead { display: table-cell;}
-.divTableHeading { display: table-header-group;}
-.divTableFoot { display: table-footer-group;}
-.divTableBody { display: table-row-group;}
+  /* DivTable.com */
+  .divTable{ display: table; }
+  .divTableRow { display: table-row; }
+  .divTableCell, .divTableHead { display: table-cell;}
+  .divTableHeading { display: table-header-group;}
+  .divTableFoot { display: table-footer-group;}
+  .divTableBody { display: table-row-group;}
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 3s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
 
 </style>

@@ -5,14 +5,26 @@
     <div class="create-post">  
 
         <h2>ID:  {{ post2[0].ownID }}</h2> 
-
-        <label>Event Date: </label> <strong>{{ moment(posts[0].EventInfo.DateWedding).format('DD.MM.YYYY') }}</strong>
-        <br><br>
+        
         <label>Who: </label>  <input type="text" v-model="post2[0].ContactPerson" placeholder="Name">
-        <br>     
+        <br><br>     
+        
         <label>Info Date</label><br>
         <date-picker v-model="post2[0].DateInfo" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the communication Date"></date-picker>
         <br><br>
+
+        <label>Chanel: </label>
+        <div>
+          <span>Email </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Email">
+          <span>Telephon </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Telephon">
+          <span>Skype </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Skype">
+          <span>Whatsapp </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Whatsapp">
+          <span>Facebook </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Facebook">
+          <span>Instagram </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Instagram">
+          <span>Other </span> <input class="radio" type="radio" name="ActivCustomer" v-model="post2[0].ChanelChoosed" value="Other">
+        </div>
+
+        <br>
         <label>Text, Comment, Email</label><br>
         <textarea name="comment" form="usrform"  v-model="post2[0].CommentsInfo" placeholder="Here some coments">Enter text here...</textarea>
 
@@ -54,30 +66,49 @@ export default {
       },
        post2: {
         0: {
+          DateInfo: new Date(),
+          ChanelChoosed: 'Email',
+          ownID: ''
         }
        },
       error: '',    
-      // custom lang
-      lang: 'en'
-      // custom range shortcuts
+      lang: 'en',
+      ChanelChoosed: '',
+      theyaremessages: false
+
 
 
     }
   },
   async created() {
-    if(this.$route.query.id){
-        this.id = this.$route.query.id;
+    let idmessage = '';
+    if(this.$route.query.idmessage){            
+      idmessage = this.$route.query.idmessage;
     } else {
-        this.$router.push(`/`);
-    }  
-    
-    if(this.id){
+      if(this.$route.query.id){
+          this.id = this.$route.query.id;
+      } else {
+          this.$router.push(`/`);
+      }  
+    }
+
+    if(this.id && !idmessage){
         try {
             this.posts = await PostService.getPosts(this.id);
             this.post2[0].id = this.id;
             this.post2[0].ownID = this.posts[0].ownID;
-            //this.post2.id = 'asdfasdf';
-            console.log(this.post2);
+
+        } catch(err) {
+            this.error = err.message;
+        }
+    } else if(idmessage){
+        try {
+            this.post2 = await PostService.getMessages(idmessage, 1);
+            if(this.posts[0])
+            { 
+              this.theyaremessages = true;
+            }
+
         } catch(err) {
             this.error = err.message;
         }
@@ -87,13 +118,30 @@ export default {
   methods: {
     async createPost() {
         let data = '';
-        
-        data = await PostService.insertPost(
-            'insertinfo',
-            this.post2
-        );
+        //console.log('this.id1: ', this.id);
+        //console.log('this.id2: ', this.post2[0].idCustomer);
+        let idtransfer = '';
 
-        this.$router.push(`ViewCostumer?id=${this.id}`);
+
+        if(!this.theyaremessages){
+          data = await PostService.insertPost(
+              'insertinfo',
+              this.post2
+          );
+          idtransfer = this.id;
+          //console.log('idtransfer1: ', idtransfer);
+        } else {
+          data = await PostService.updatePost(
+              'updateinfo',
+              this.post2
+          );
+          idtransfer = this.post2[0].idCustomer;
+          //console.log('idtransfer2: ', idtransfer);
+        }
+
+        //console.log('idtransfer3: ', idtransfer);
+
+        this.$router.push(`ViewCostumer?id=${idtransfer}`);
     }
 
   }
@@ -117,17 +165,14 @@ export default {
  }
 
   div.create-post input{
-  /*div.create-post {*/
-    /*float: left;*/
     width: 95%;
-    height: 25px;
-    margin: 5px 0 20px 0;
-    padding:5px;
-    border: 1px solid #ff8c8c;
+    padding: 5px;
+    border: 1px solid #bdbdbd; 
     background-color: #f7f7f7;
     color: #6e6e6e;
     font-size: 16px;
-     
+    max-width: 1250px;
+
   }
 
     div.create-post textarea{
@@ -137,7 +182,7 @@ export default {
     height: 150px;
     margin: 5px 0 20px 0;
     padding:5px;
-    border: 1px solid #ff8c8c;
+    border: 1px solid #bdbdbd; 
     background-color: #f7f7f7;
     color: #6e6e6e;
     font-size: 16px;
@@ -156,26 +201,14 @@ export default {
      
   }
 
-/* Create a custom checkbox */
-div.create-post .checkbox {
-  /*position: absolute;*/  
-  /*top: 0;
-  left: 0;*/
-  height: 15px;
-  width: 15px;
-  margin-left: 15px;
-  /*background-color: #eee;*/
-}
 
 /* Create a custom radio buttom */
 div.create-post .radio{
-  /*position: absolute;*/  
-  /*top: 0;
-  left: 0;*/
   height: 0px;
-  width: 25px;
-  margin-right: 25px;
-  /*background-color: #eee;*/
+  width: 0px;
+  margin: 0 25px 0 1px;
+  background-color: #eee;
+  border: 1px solid #ff8c8c;
 }
 
   div.create-post input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

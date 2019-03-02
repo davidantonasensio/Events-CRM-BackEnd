@@ -3,7 +3,10 @@
   <div  class="container" v-if="!error">  
     <v-dialog/>  
     <div class="create-post">  
-      <button class="btn" v-on:click="EditPost">Edit</button> <button class="btn" v-on:click="show">Delete</button><br><br>
+      <button class="btn" v-on:click="EditPost">Edit</button> 
+      <button class="btn" v-on:click="show()">Delete</button>
+      <button class="btn" v-on:click="$router.push('insertinfo?id=' + posts[0]._id)">Message</button>
+      <br><br>
       <h1>{{ posts[0].ownID }}</h1>
 
 
@@ -149,7 +152,7 @@
         </transition>
 
 
-        <transition name="fade">
+       
         <div style="clear:both;" v-if="commentVisible">
 
           <div class="box-title">
@@ -157,15 +160,17 @@
           </div>
 
           <div>
-            <div class="box-comment">
+            <div class="box-comment" :style="theyaremessages ? 'max-width:588px;' : '' ">
               <div class="box02">{{ posts[0].Comments }}</div>
             </div>
           </div>
         </div>
-        </transition>
+      
 
       </div>
 
+
+      <transition name="fade">
       <div class="boxmessagecollumn" v-if="theyaremessages">
         <div class="box-title">
           Comunication with client
@@ -175,8 +180,7 @@
           v-bind:item="postsmessage"
           v-bind:index="index"
           v-bind:key="postsmessage._id"         
-        >
-            <transition name="fade">
+        >            
             <div>
               <div class="boxmessage">
                 <div>
@@ -187,25 +191,32 @@
                   <strong>Who</strong>
                   <div class="box03">{{ postsmessage.ContactPerson }}</div>
                 </div>
+                <div>
+                  <strong>Chanel</strong>
+                  <div class="box03">{{ postsmessage.ChanelChoosed }}</div>
+                </div>
                 <div class="boxmessage-comment">
                   <strong>Comment</strong>
                   <div class="box02">{{ postsmessage.CommentsInfo }}</div>
                 </div>
                 <div style="clear:both;">
-                  <button class="btn" v-on:click="EditMessage">Edit Message</button> <button class="btn" v-on:click="show">Delete Message</button>
+                  <button class="btn" v-on:click="EditMessage(postsmessage._id)">Edit Message</button> <button class="btn" v-on:click="show(postsmessage._id)">Delete Message</button>
                 </div>
               </div>
               
             </div>
-            </transition>
+            
         </div>
       </div>
+      </transition>
 
 
 <br><br><br><br>
     
       <div style="clear:both;">
-        <button class="btn" v-on:click="EditPost">Edit</button> <button class="btn" v-on:click="show">Delete</button>
+        <button class="btn" v-on:click="EditPost">Edit</button> 
+        <button class="btn" v-on:click="show()">Delete</button>        
+        <button class="btn" v-on:click="$router.push('insertinfo?id=' + posts[0]._id)">Message</button>
       </div>
 
 
@@ -252,7 +263,6 @@ export default {
       }
           ,
       error: '',
-      counter: true,
       id: '',
       id2: '',
       fecha: '',
@@ -300,18 +310,22 @@ export default {
     },*/
 
     async getMessages() {
-      console.log('hay mensajes 1: ', this.theyaremessages );
+      //console.log('hay mensajes 1: ', this.theyaremessages );
       try {
         this.postsmessages = await PostService.getMessages(this.id);
-        console.log("JIDER: ", this.postsmessages);
+        //console.log("JIDER: ", this.postsmessages);
         //console.log("idCustomer: ", this.postsmessages[0].idCustomer);
         //if(typeof this.postsmessages[0].idCustomer !== 'undefined')
         if(this.postsmessages[0])
         { 
-          console.log('yessssssss');
+          //console.log('yessssssss');
           this.theyaremessages = true;
         }
-        console.log('hay mensajes 2: ', this.theyaremessages );
+
+        //this.postsmessages.sort();
+        this.postsmessages.sort(this.compare);
+
+        //console.log('hay mensajes 2: ', this.theyaremessages );
 
 
       } catch(err) {
@@ -324,29 +338,47 @@ export default {
       this.$router.push(`Edit?id=${this.id2}`);
     },
 
-    async EditMessage() {
-      this.$router.push(`insertinfo?id=${this.id2}`);
+    async EditMessage(idmessage) {
+      //console.log('idmessage: ', idmessage);
+      this.$router.push(`insertinfo?idmessage=${idmessage}`);
     },
 
-    async deletePost(){
-      console.log("ID: ", this.id);
-      await PostService.deletePost(this.id);
+    async deletePost(deleteMessage = ''){
+      //console.log("ID: ", this.id);
+      //console.log("ID: ", this.postsmessages[0]._id);
+      //console.log('33333333333: ', deleteMessage);
+      await PostService.deletePost(this.id, deleteMessage);
+      
+      //await PostService.deletePost(this.id);
       this.posts = await PostService.getPosts();
-      this.$router.push('\/');
+      //this.$router.push(`ViewCostumer?id=${this.id}`);
+      this.$router.push(`\/`);
+      this.hide ();
+      
     },
     //PopUp delete window
-    show () {
+    show (deleteMessage = '') {
       this.$modal.show('hello-world');
-      console.log('222222222222');
+      //console.log('222222222222: ', deleteMessage);
+      let title;
+      let text;
+
+      if (deleteMessage === ''){
+        title = 'Delete Entry ' + this.posts[0].ownID;
+        text = 'Are you sure you want to delete customer and all its messages??? ';
+      } else {
+        title = 'Delete Message of Client ' + this.posts[0].ownID;
+        text = 'Are you sure you want to delete the message??? ';
+      }
 
       this.$modal.show('dialog', {
-        title: 'Delete Entry ' + this.posts[0].ownID,
-        text: 'Are you sure you want to delete customer??? ' ,
+        title: title,
+        text: text ,
         buttons: [
           {
             title: 'Delete',
             //handler: () => { alert('Woot!') }
-            handler: () => { this.deletePost() }
+            handler: () => { this.deletePost(deleteMessage) }
             
           },
           {
@@ -363,7 +395,22 @@ export default {
 
     hide () {
       this.$modal.hide('dialog');
-    }    
+    },
+    
+    compare(a, b) {
+      // Use toUpperCase() to ignore character casing
+      const DateInfoA = a.DateInfo.toUpperCase();
+      const DateInfoB = b.DateInfo.toUpperCase();
+
+      let comparison = 0;
+      if (DateInfoA > DateInfoB) {
+        comparison = 1;
+      } else if (DateInfoA < DateInfoB) {
+        comparison = -1;
+      }
+
+      return comparison * -1 ;
+    },
 
   }
 }
@@ -470,7 +517,7 @@ export default {
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity 1s;
+    transition: opacity 2s;
   }
   .fade-enter, .fade-leave-to {
     opacity: 0;
@@ -492,11 +539,12 @@ export default {
     margin-left:10px; 
     background: rgb(218, 218, 218); 
     padding: 0 10px 10px 10px;
+    max-width: 317px;
   }
 
   .boxmessage{
     float:left; 
-    min-width:270px; 
+    /*min-width:270px; */
     max-width:450px;
     height:100%; 
     border: 2px solid #d9d9d9; 
@@ -511,6 +559,7 @@ export default {
     height:100%;  
     background-color:#fff; 
     white-space: pre-line;
+    width: 100%;
   }
 
   .box {
@@ -531,6 +580,7 @@ export default {
     border: 1px solid #bdbdbd; 
     padding:5px; 
     width:95%;
+    max-width: 100%;
   }
 
   .box03 {

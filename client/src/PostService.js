@@ -8,7 +8,7 @@ class PostService{
 
     // Get Post
     static getPosts(id=false, activ=false, customer=false, Years=[]){
-        //console.log("anos",Years);
+        //console.log("cliente 111: ", customer);
         //Years = ["2019"];
   
         return new Promise(async (resolve, reject)=> {
@@ -39,8 +39,9 @@ class PostService{
     }
 
     // Get Post
-    static getMessages(ClientID){
-        console.log("ClientID",ClientID);
+    static getMessages(ID, howmany='all'){
+        //console.log("ID: ",ID);
+        //console.log("howmany: ",howmany);
         //Years = ["2019"];
         let url2 = url + 'messages';
         //console.log("url2", url2);
@@ -51,7 +52,8 @@ class PostService{
                 //let lenghtYearsArray = Years.length;
                 const res = await axios.get(url2, {
                     params: {
-                        ClientID: ClientID,
+                        ID: ID,
+                        howmany: howmany
                     }
                 })                
                                
@@ -72,22 +74,15 @@ class PostService{
 
 
     // Insert Post
-    static insertPost(
-            kindofinsert='',
-            post
-        ){
-            let url2 = '';
-            console.log('post2: ', post);
-            //console.log('kind of insert: ', kindofinsert);
+    static insertPost(kindofinsert='', post){
+        let url2 = '';
+        
         if(kindofinsert === 'insertinfo'){
             url2 = url + 'insertinfo';
         } else {
             url2 = url;
         }
-        console.log('url2: ', url2)
-        //console.log('in postservice 111: ', post2[0].CommentsInfo);
-        //let CommentsInfo = post[0].CommentsInfo;
-        
+                
         return axios.post(url2,{
             post
         }).then(response =>{
@@ -101,24 +96,54 @@ class PostService{
 
 
     // Update Post
-    static updatePost(post){
-    let url3 = url + 'update';
-    //console.log("post: ", post);   
+    static updatePost(post, kindofupdate=''){
+        let url3 = ''
+        if(kindofupdate !== 'updateinfo'){
+            url3 = url + 'update';
+        } else {
+            url3 = url + 'updatemessages';
+        }
+        //console.log("post: ", post);   
 
-    return axios.post(url3,{
-        post
-    }).then(response =>{
-        return response.data;
-      }).catch(err =>{
-        return err;
-      });
-     
+        
+        
+        //return axios.post(url3,{
+        const res = axios.post(url3,{
+            post
+        }).then(response =>{
+            return response.data;
+        }).catch(err =>{
+            return err;
+        });
+
+        //console.log('res: ', res)
+        return res;
+        
 }
 
     // Delete Post
-    static deletePost(id) {
-        console.log("en clase: ", id);
-        return axios.delete(`${url}${id}`);
+    static deletePost(id, idMessage = '') {
+        //console.log("id: ", id);
+        //console.log("idMessage: ", idMessage);
+
+        let url3 = url;
+        //console.log('url3: ', url3);
+
+        //console.log("idMessage2: ", idMessage);
+
+        const res = axios.delete(url3,{
+            params: {
+                id: id,
+                idMessage: idMessage
+            }
+        }).then(response =>{
+            console.log('res1: ', response.data)
+            return response.data;                
+        }).catch(err =>{
+            console.log('res2 err: ', err)
+            return err;
+        });
+            
     }
 }
 

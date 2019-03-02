@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
       if(req.query.activ === 'true'){ activ = true} else {activ=false}
       if(req.query.customer === 'true'){ customer = true} else {customer=false}
 
-
+      //res.send("customer22: " + customer);
       // Search for entries for the selected Years
       if(lenghtYearsArray !== 0){
         for (i = 0; i < lenghtYearsArray; i++) {
@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
 
       // Search just for is activ and is customer, Years are not selected  
       } else {
-        //res.send("8888888888");
+        //res.send("pppppppppppp");
         JsonArray1 = await posts.find({
           ActivCustomer: activ,
           AlreadyCustomer: customer
@@ -87,12 +87,17 @@ router.get('/', async (req, res) => {
 
 // Get Posts
 router.get('/messages', async (req, res) => {
-  //res.send("666666666666: " + req.body.id);
+  //res.send("6666666666661: " + req.body.howmany);
+  //res.send("666666666666: " + req.query.ID);
   const posts = await loadPostsCollection('events', 'infos');
 
-  Messages = await posts.find({
-    idCustomer: req.query.ClientID
-  }).toArray();
+  if(req.query.howmany === 'all'){
+    Messages = await posts.find({
+      idCustomer: req.query.ID
+    }).toArray();
+  } else {
+    Messages = await posts.find({_id: new mongodb.ObjectID(req.query.ID) }).toArray() 
+  }
 
   res.send(Messages);
 
@@ -168,6 +173,7 @@ router.post('/insertinfo', async (req, res) => {
       ownID: req.body.post[0].ownID,
       ContactPerson: req.body.post[0].ContactPerson,
       DateInfo: req.body.post[0].DateInfo,
+      ChanelChoosed: req.body.post[0].ChanelChoosed,
       CommentsInfo: req.body.post[0].CommentsInfo
       //CommentsInfo: req.body.CommentsInfo,
       //cojones: 'pues no'
@@ -245,13 +251,83 @@ router.post('/update', async (req, res) => {
   
 });
 
+// update Post
+
+router.post('/updatemessages', async (req, res) => {
+  //res.status(201).send('YAAAAAA: ' + req.body.post[0]._id);
+  //res.status(201).send('YAAAAAA: ' + req.body.post[0]);
+  //res.status(201).send('01010101010101');
+
+  const posts = await loadPostsCollection('events', 'infos');
+
+  await posts.updateOne({
+    "_id": new mongodb.ObjectID(req.body.post[0]._id)
+    //"_id": req.body.post[0]._id
+  },
+  { $set: {
+      idCustomer: req.body.post[0].idCustomer,
+      ownID: req.body.post[0].ownID,
+      ContactPerson: req.body.post[0].ContactPerson,
+      DateInfo: req.body.post[0].DateInfo,
+      ChanelChoosed: req.body.post[0].ChanelChoosed,
+      CommentsInfo: req.body.post[0].CommentsInfo,
+    }
+  })
+  .then(result => {
+    // result.matchedCount === 1
+    //res.status(201).send(req.body.id);
+    res.status(201).send(req.body.post[0].idCustomer);
+  }).catch((err) => {
+    res.status(201).send(err);
+  });
+
+});
+
+
 
 
 // Delete Post
-router.delete('/:id', async (req, res) => {
-//router.delete('/', async (req, res) => {
-  //res.status(201).send("BLABLALBALBALBABLA");
+//router.delete('/:id', async (req, res) => {
+router.delete('/', async (req, res) => {
+  //res.status(201).send('1212121212');
+  //res.status(201).send('1212121212: ' + req.query.idMessage);
 
+  let posts = '';
+  //res.status(201).send('Delete message: ' + req.query.idMessage);
+
+  if(req.query.idMessage === ''){
+    //res.status(201).send('1212121212: ' + req.query.id);
+    posts = await loadPostsCollection('events', 'clients');
+    await posts.deleteOne({ _id: new mongodb.ObjectID(req.query.id) })
+    .then(result => {
+      //res.status(201).send('Delete Entry: ' + req.query.idMessage);
+    }).catch((err) => {
+      res.status(201).send(err);
+    });
+
+    posts = await loadPostsCollection('events', 'infos');
+    await posts.remove({ idCustomer: req.query.id })
+    .then(result => {
+      res.status(201).send('Delete Entry and Messages: ' + req.query.id);
+    }).catch((err) => {
+      res.status(201).send(err);
+    });
+
+  } else {
+
+    res.status(201).send('5555555555555: ' + req.query.idMessage);
+    posts = await loadPostsCollection('events', 'infos');
+    await posts.deleteOne({ _id: new mongodb.ObjectID(req.query.idMessage) })
+    .then(result => {
+      res.status(201).send('Delete message: ' + req.query.idMessage);
+    }).catch((err) => {
+      res.status(201).send(err);
+    });
+
+  }
+  
+
+  /*
   const posts = await loadPostsCollection('events', 'clients');
   await posts.deleteOne({ _id: new mongodb.ObjectID(req.params.id) })
   .then(result => {
@@ -259,6 +335,7 @@ router.delete('/:id', async (req, res) => {
   }).catch((err) => {
     res.status(201).send(err);
   });
+  */
   
   //res.status(200).send();
 });
