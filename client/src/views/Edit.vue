@@ -6,7 +6,7 @@
     <div class="create-post">   
 
       <label>Own ID *</label><br>
-      <input name="OwnID" v-validate.continues="'required|alpha_dash|min:10'" type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
+      <input name="OwnID" v-validate.continues="'required|min:10'" type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
         <div class="invalid-feedback">{{ errors.first("OwnID") }}</div>
       <div>
 
@@ -18,31 +18,31 @@
             <div>
               <strong>Client Name *</strong>
               <div class="box03">
-                <input name="Client1Name" v-validate.continues="'required|alpha_spaces|min:2'" type="text" v-model="posts[0].Client1Info.Client1Name" placeholder="Name">
+                <input name="Client1Name" v-validate.continues="'required|min:2'" type="text" v-model="posts[0].Client1Info.Client1Name" placeholder="Name">
               </div>
             </div>
             <div>
               <strong>Client Surname</strong>
               <div class="box03">
-                <input name="Client1Surname" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client1Info.Client1Surname" placeholder="Surname">
+                <input name="Client1Surname" v-validate="'min:2'" type="text" v-model="posts[0].Client1Info.Client1Surname" placeholder="Surname">
               </div>
             </div>
             <div>
               <strong>Client Telephon Number *</strong>
               <div class="box03">
-                <input name="Client1Tel" v-validate.continues="'required|alpha_dash'" type="text" v-model="posts[0].Client1Info.Client1Tel" placeholder="Telefon Number">
+                <input name="Client1Tel" v-validate.continues="'required|min:2'" type="text" v-model="posts[0].Client1Info.Client1Tel" placeholder="Telefon Number">
               </div>
             </div>
             <div>
               <strong>Client Email *</strong>
               <div class="box03">
-                <input v-validate="'required|email'" type="email" name="Client1Email" v-model="posts[0].Client1Info.Client1Email" placeholder="Email">
+                <input v-validate.continues="'required|email'" type="email" name="Client1Email" v-model="posts[0].Client1Info.Client1Email" placeholder="Email">
               </div>
             </div>
             <div>
               <strong>Adress2</strong>
               <div class="box03">
-                <input name="Address" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Address" placeholder="Address"><br><br>
+                <input name="Address" v-validate="'min:5'" type="text" v-model="posts[0].Address" placeholder="Address"><br><br>
               </div>
             </div>
           </div>
@@ -56,19 +56,19 @@
             <div>
               <strong>Client 2 Name</strong>
               <div class="box03">
-                <input name="Client2Name" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client2Info.Client2Name" placeholder="Name">
+                <input name="Client2Name" v-validate="'min:2'" type="text" v-model="posts[0].Client2Info.Client2Name" placeholder="Name">
               </div>
             </div>
             <div>
               <strong>Client 2 Surname</strong>
               <div class="box03">
-                <input name="Client2Surname" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client2Info.Client2Surname" placeholder="Surname">
+                <input name="Client2Surname" v-validate="'min:2'" type="text" v-model="posts[0].Client2Info.Client2Surname" placeholder="Surname">
               </div>
             </div>
             <div>
               <strong>Client 2 Telephon Number</strong>
               <div class="box03">
-                <input name="Client2Tel" v-validate.continues="'alpha_dash'" type="text" v-model="posts[0].Client2Info.Client2Tel" placeholder="Telefon Number">
+                <input name="Client2Tel" v-validate="'min:2'" type="text" v-model="posts[0].Client2Info.Client2Tel" placeholder="Telefon Number">
               </div>
             </div>
             <div>
@@ -87,24 +87,25 @@
           <div class="box">
             <div>
               <strong>Contact Date *</strong>
-              <div class="box03" style="margin-bottom:40px;">
+              <div class="box03" >
                 <date-picker name="DateContact" v-validate="'required'" v-model="posts[0].DateContact" confirm:true type='datetime' value-type='date'
                  :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br>
-                 <span>{{ errors.first('DateContact') }}</span>
-
+                 <span style="color:red;">{{ errors.first('DateContact') }}<br><br><br></span>
               </div>
             </div>
+            <div v-if="errors.first('DateContact')" style="margin-bottom:40px;"></div> 
             <div>
               <strong>Event Date *</strong>
-              <div class="box03" style="margin-bottom:40px;">
+              <div class="box03">
                 <date-picker name="DateEvent" v-validate="'required'" v-model="posts[0].EventInfo.DateEvent" type='datetime' value-type='date' 
                 :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br>
-                  <span>{{ errors.first('DateEvent') }}</span>
+                  <span style="color:red;">{{ errors.first('DateEvent') }}</span>
               </div>
             </div>
+            <div v-if="errors.first('DateEvent')" style="margin-bottom:40px;"></div>
             <div>
               <strong>Event Location</strong>
-              <div class="box03"><input name="EventLocation" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+              <div class="box03"><input name="EventLocation" v-validate.continues="'required|min:2'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
             </div>
           </div>          
         </div> 
@@ -130,7 +131,7 @@
             <div>
               <strong>Source</strong>
               <div class="box03">
-                <input name="Source" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Source" placeholder="Introduce the source">
+                <input name="Source" v-validate="'min:2'" type="text" v-model="posts[0].Source" placeholder="Introduce the source">
               </div>
             </div>
 
@@ -176,7 +177,7 @@
             </div>
             <div>
               <strong>Event Location</strong>
-              <div class="box03"><input name="EventLocation" v-validate="'alpha_spaces'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+              <div class="box03"><input name="EventLocation" v-validate="'min:2'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
             </div>
           </div>          
         </div> 
@@ -189,19 +190,19 @@
             <div>
               <strong>Ordered Services</strong>
               <div class="box03">
-                <input name="OrderedServices" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services">
+                <input name="OrderedServices" v-validate="'min:2'" type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services">
               </div>
             </div>
             <div>
               <strong>Ordered Products</strong>
               <div class="box03">
-                <input name="OrderedProducts" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products">
+                <input name="OrderedProducts" v-validates="'min:2'" type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products">
               </div>
             </div>
             <div>
               <strong>Number of Hours</strong>
               <div class="box03">
-                <input name="NumberHours" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
+                <input name="NumberHours" v-validate="'min:2'" type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
               </div>
             </div>
             <div>
@@ -221,13 +222,13 @@
             <div>
               <strong>Total Price</strong>
               <div class="box03">
-                <input name="TotalPrice" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price">
+                <input name="TotalPrice" v-validate="'min:2'" type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price">
               </div>
             </div>
             <div>
               <strong>Deposit to Pay</strong>
               <div class="box03">
-                <input name="DepositToPay" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay">
+                <input name="DepositToPay" v-validate="'min:2'" type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay">
               </div>
             </div>
             <div>
