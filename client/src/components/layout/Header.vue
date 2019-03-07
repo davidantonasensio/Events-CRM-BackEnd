@@ -4,7 +4,7 @@
     <div>      
       <ul>
         <li><router-link to="/">Costumers List</router-link></li>
-        <li><router-link to="/new">Insert new Event</router-link></li>
+        <li><router-link to="/edit">Insert new Event</router-link></li>
       </ul>
     </div>
   </header>

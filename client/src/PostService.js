@@ -104,6 +104,7 @@ class PostService{
             url3 = url + 'updatemessages';
         }
         //console.log("post: ", post);   
+        //console.log("url: ", url3);
 
         
         
@@ -137,10 +138,10 @@ class PostService{
                 idMessage: idMessage
             }
         }).then(response =>{
-            console.log('res1: ', response.data)
+            //console.log('res1: ', response.data)
             return response.data;                
         }).catch(err =>{
-            console.log('res2 err: ', err)
+            //console.log('res2 err: ', err)
             return err;
         });
             

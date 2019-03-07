@@ -35,7 +35,7 @@
             <div>
               <strong>Client Email</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client1Info.Client1Email" placeholder="Email"> 
+                <input type="email" v-model="posts[0].Client1Info.Client1Email" placeholder="Email"> 
               </div>
             </div>
             <div>
@@ -320,11 +320,11 @@ export default {
         //console.log('Data de return: ', data);
         this.$router.push(`ViewCostumer?id=${data}`);
 
-    },
+    }/*,
     async deletePost(id){
       await PostService.deletePost(id);
       this.posts = await PostService.getPosts();
-    }
+    }*/
 
 
   }

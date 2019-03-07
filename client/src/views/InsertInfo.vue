@@ -6,11 +6,14 @@
 
         <h2>ID:  {{ post2[0].ownID }}</h2> 
         
-        <label>Who: </label>  <input type="text" v-model="post2[0].ContactPerson" placeholder="Name">
+        <label>Who: </label>  
+        <input name="ContactPerson" v-validate.continues="'required|min:5'" type="text" v-model="post2[0].ContactPerson" placeholder="Name">
         <br><br>     
         
         <label>Info Date</label><br>
-        <date-picker v-model="post2[0].DateInfo" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the communication Date"></date-picker>
+        <date-picker name="DateInfo" v-validate="'required'"  v-model="post2[0].DateInfo" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the communication Date"></date-picker>
+        <br>
+        <span>{{ errors.first('DateInfo') }}</span>
         <br><br>
 
         <label>Chanel: </label>
@@ -26,9 +29,9 @@
 
         <br>
         <label>Text, Comment, Email</label><br>
-        <textarea name="comment" form="usrform"  v-model="post2[0].CommentsInfo" placeholder="Here some coments">Enter text here...</textarea>
+        <textarea v-validate.continues="'required|min:10'" name="comment" form="usrform"  v-model="post2[0].CommentsInfo" placeholder="Here some coments">Enter text here...</textarea>
 
-        <button class="btn" v-on:click="createPost">Post!</button>
+        <button class="btn" v-on:click="ValidatePost">Post!</button>
 
     </div>
     <p class="error" v-if="error">{{ error }}</p>
@@ -116,9 +119,21 @@ export default {
 
   },
   methods: {
+    ValidatePost() {
+      this.$validator.validate().then(result => {
+        if (!result) {
+          //console.log('No validado');
+          // do stuff if not valid.
+        } else {
+          //console.log('Validado');
+          this.createPost();
+        }
+
+      });
+    },
     async createPost() {
         let data = '';
-        //console.log('this.id1: ', this.id);
+        //console.log('this.id11: ', this.id);
         //console.log('this.id2: ', this.post2[0].idCustomer);
         let idtransfer = '';
 
@@ -131,12 +146,13 @@ export default {
           idtransfer = this.id;
           //console.log('idtransfer1: ', idtransfer);
         } else {
+          //console.log('idtransfer2-1: ', idtransfer);
           data = await PostService.updatePost(
-              'updateinfo',
-              this.post2
+              this.post2,
+              'updateinfo'
           );
           idtransfer = this.post2[0].idCustomer;
-          //console.log('idtransfer2: ', idtransfer);
+          //console.log('idtransfer2-2: ', idtransfer);
         }
 
         //console.log('idtransfer3: ', idtransfer);
@@ -220,6 +236,22 @@ div.create-post .radio{
   color: rgb(192, 192, 192);
   opacity: 1; /* Firefox */
 }
+
+  div.create-post input:valid {
+    border: 1px solid rgb(30, 207, 30);
+  }
+
+  div.create-post input:invalid {
+    border: 2px solid red;
+  }
+
+  input[aria-invalid="true"] {
+    border-color: red;
+  }
+
+  input[aria-invalid="false"] {
+      border-color: green;
+  }
 
   div.create-post label {
     color: #919191;

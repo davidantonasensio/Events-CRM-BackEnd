@@ -17,8 +17,6 @@ router.get('/', async (req, res) => {
     //res.send("BBBBB");
     lenghtYearsArray = 0;
   }
-
-
   
 
   // search for one entry by its id
@@ -85,9 +83,8 @@ router.get('/', async (req, res) => {
 // End of Get Posts
 
 
-// Get Posts
+// Get Messages
 router.get('/messages', async (req, res) => {
-  //res.send("6666666666661: " + req.body.howmany);
   //res.send("666666666666: " + req.query.ID);
   const posts = await loadPostsCollection('events', 'infos');
 
@@ -315,7 +312,7 @@ router.delete('/', async (req, res) => {
 
   } else {
 
-    res.status(201).send('5555555555555: ' + req.query.idMessage);
+    //res.status(201).send('5555555555555: ' + req.query.idMessage);
     posts = await loadPostsCollection('events', 'infos');
     await posts.deleteOne({ _id: new mongodb.ObjectID(req.query.idMessage) })
     .then(result => {

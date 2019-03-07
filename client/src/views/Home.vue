@@ -2,6 +2,7 @@
   <div class="container">
     <v-dialog/>
     <h1>List of Customers</h1>    
+    <!--aaaa: {{ windowWidth }} - {{joder}} - {{msg}}-->
       
     
     <div class="search">     
@@ -79,6 +80,17 @@ import moment from 'moment'
 
 
 export default {
+  /*props: [ 'windowWidth','windowHeight','msg'],
+  props:{
+      windowWidth:{
+          type:Number,
+          default:15
+      },
+      msg:{
+          type:String,
+          default:'hola'
+      }
+  },*/
   name: 'Home',
   /*
   template: `
@@ -89,6 +101,9 @@ export default {
     */
   data() {
     return {
+      //windowWidth: 0,
+      //windowHeight: 0,
+      joder:'JODER',
       AlreadyCustomer: false,
       ActivCustomer: false,
       moment:moment,
@@ -117,6 +132,7 @@ export default {
   },
   async created() {
     //this.id = this.$route.query.id;
+    //this.windowWidth = 1234;
     try {
       this.posts = await PostService.getPosts(false, this.ActivCustomer, this.AlreadyCustomer, this.year);
       //this. ActivCustomer = true;

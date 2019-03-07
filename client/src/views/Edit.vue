@@ -1,12 +1,13 @@
 <template>
 
   <div class="container">
-    <h1>Edit Information</h1>
+    <h1 v-if="id">Edit Information</h1>
+    <h1 v-else>New Client</h1>
     <div class="create-post">   
 
-      <label>Own ID</label><br>
-      <input type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
-
+      <label>Own ID *</label><br>
+      <input name="OwnID" v-validate.continues="'required|alpha_dash|min:10'" type="text" v-model="posts[0].ownID" placeholder="Introduce you Own costumer Identification "><br>
+        <div class="invalid-feedback">{{ errors.first("OwnID") }}</div>
       <div>
 
         <div style="float:left;">
@@ -15,33 +16,33 @@
           </div>
           <div class="box">
             <div>
-              <strong>Client Name</strong>
+              <strong>Client Name *</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client1Info.Client1Name" placeholder="Name">
+                <input name="Client1Name" v-validate.continues="'required|alpha_spaces|min:2'" type="text" v-model="posts[0].Client1Info.Client1Name" placeholder="Name">
               </div>
             </div>
             <div>
               <strong>Client Surname</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client1Info.Client1Surname" placeholder="Surname">
+                <input name="Client1Surname" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client1Info.Client1Surname" placeholder="Surname">
               </div>
             </div>
             <div>
-              <strong>Client Telephon Number</strong>
+              <strong>Client Telephon Number *</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client1Info.Client1Tel" placeholder="Telefon Number">
+                <input name="Client1Tel" v-validate.continues="'required|alpha_dash'" type="text" v-model="posts[0].Client1Info.Client1Tel" placeholder="Telefon Number">
               </div>
             </div>
             <div>
-              <strong>Client Email</strong>
+              <strong>Client Email *</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client1Info.Client1Email" placeholder="Email"> 
+                <input v-validate="'required|email'" type="email" name="Client1Email" v-model="posts[0].Client1Info.Client1Email" placeholder="Email">
               </div>
             </div>
             <div>
-              <strong>Adress</strong>
+              <strong>Adress2</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Address" placeholder="Address"><br><br>
+                <input name="Address" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Address" placeholder="Address"><br><br>
               </div>
             </div>
           </div>
@@ -55,25 +56,25 @@
             <div>
               <strong>Client 2 Name</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client2Info.Client2Name" placeholder="Name">
+                <input name="Client2Name" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client2Info.Client2Name" placeholder="Name">
               </div>
             </div>
             <div>
               <strong>Client 2 Surname</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client2Info.Client2Surname" placeholder="Surname">
+                <input name="Client2Surname" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Client2Info.Client2Surname" placeholder="Surname">
               </div>
             </div>
             <div>
               <strong>Client 2 Telephon Number</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client2Info.Client2Tel" placeholder="Telefon Number">
+                <input name="Client2Tel" v-validate.continues="'alpha_dash'" type="text" v-model="posts[0].Client2Info.Client2Tel" placeholder="Telefon Number">
               </div>
             </div>
             <div>
               <strong>Client 2 Email</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Client2Info.Client2Email" placeholder="Email"> 
+                <input name="Client2Email" v-validate="'email'" type="text" v-model="posts[0].Client2Info.Client2Email" placeholder="Email"> 
               </div>
             </div>
           </div>
@@ -85,20 +86,25 @@
           </div>
           <div class="box">
             <div>
-              <strong>Contact Date</strong>
-              <div class="box03">
-                <date-picker v-model="posts[0].DateContact" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              <strong>Contact Date *</strong>
+              <div class="box03" style="margin-bottom:40px;">
+                <date-picker name="DateContact" v-validate="'required'" v-model="posts[0].DateContact" confirm:true type='datetime' value-type='date'
+                 :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br>
+                 <span>{{ errors.first('DateContact') }}</span>
+
               </div>
             </div>
             <div>
-              <strong>Event Date</strong>
-              <div class="box03">
-                <date-picker v-model="posts[0].EventInfo.DateEvent" type='datetime' value-type='date' :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker>
+              <strong>Event Date *</strong>
+              <div class="box03" style="margin-bottom:40px;">
+                <date-picker name="DateEvent" v-validate="'required'" v-model="posts[0].EventInfo.DateEvent" type='datetime' value-type='date' 
+                :first-day-of-week="1" :lang="lang" placeholder="Introduce the contact Date"></date-picker><br>
+                  <span>{{ errors.first('DateEvent') }}</span>
               </div>
             </div>
             <div>
               <strong>Event Location</strong>
-              <div class="box03"><input type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+              <div class="box03"><input name="EventLocation" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
             </div>
           </div>          
         </div> 
@@ -124,7 +130,7 @@
             <div>
               <strong>Source</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].Source" placeholder="Introduce the source">
+                <input name="Source" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].Source" placeholder="Introduce the source">
               </div>
             </div>
 
@@ -170,7 +176,7 @@
             </div>
             <div>
               <strong>Event Location</strong>
-              <div class="box03"><input type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
+              <div class="box03"><input name="EventLocation" v-validate="'alpha_spaces'" type="text" v-model="posts[0].EventInfo.EventLocation" placeholder="Event Location"> </div>
             </div>
           </div>          
         </div> 
@@ -183,19 +189,19 @@
             <div>
               <strong>Ordered Services</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services">
+                <input name="OrderedServices" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.OrderedServices" placeholder="Orderer Services">
               </div>
             </div>
             <div>
               <strong>Ordered Products</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products">
+                <input name="OrderedProducts" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.OrderedProducts" placeholder="Ordered Products">
               </div>
             </div>
             <div>
               <strong>Number of Hours</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
+                <input name="NumberHours" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.NumberHours" placeholder="Number of Hours"><br>
               </div>
             </div>
             <div>
@@ -215,13 +221,13 @@
             <div>
               <strong>Total Price</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price">
+                <input name="TotalPrice" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.TotalPrice" placeholder="Total Price">
               </div>
             </div>
             <div>
               <strong>Deposit to Pay</strong>
               <div class="box03">
-                <input type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay">
+                <input name="DepositToPay" v-validate.continues="'alpha_spaces'" type="text" v-model="posts[0].ContractInfo.DepositToPay" placeholder="Deposit to Pay">
               </div>
             </div>
             <div>
@@ -261,7 +267,7 @@
 
       <div style="clear:both;"></div>
 
-      <button style="margin:30px 0 50px 0;" class="btn" v-on:click="updatePost">Post!</button>
+      <button style="margin:30px 0 50px 0;" class="btn" v-on:click="ValidatePost">Post!</button>
     </div>
   
     <p class="error" v-if="error">{{ error }}</p>
@@ -283,8 +289,11 @@ export default {
   data() {
     return {
       contractVisible: false,
+      
       posts: {
         0: {
+          DateContact: new Date(),
+          //ActivCustomer: true,
           EventInfo:{
           },
           Client1Info: {
@@ -307,7 +316,7 @@ export default {
     if(this.$route.query.id){
       this.id = this.$route.query.id;
     } else {
-      this.$router.push(`/`);
+      //this.$router.push(`/`);
     }    
 
     //console.log('id', this.id);
@@ -317,15 +326,12 @@ export default {
         this.posts = await PostService.getPosts(this.id);
       } catch(err) {
         this.error = err.message;
-      }
-      //console.log('Activ?:', this.posts[0].ActivCustomer);
-      if(typeof this.posts[0].ActivCustomer === 'undefined') this.posts[0].ActivCustomer = true;
-      //console.log(this.posts);
-    }/*else{
-      console.log('Sin ID');
-      this.posts = await PostService.getPosts();
-      console.log(this.posts);
-    }*/
+      }      
+      
+      
+    }
+    //console.log('Activ1?:', this.posts[0].ActivCustomer);
+    if(typeof this.posts[0].ActivCustomer === 'undefined' || this.posts[0].ActivCustomer === null) this.posts[0].ActivCustomer = true;
 
 
     
@@ -333,14 +339,58 @@ export default {
     
   },
   methods: {
+    ValidatePost() {
+      this.$validator.validate().then(result => {
+        if (!result) {
+          console.log('No validado');
+          // do stuff if not valid.
+        } else {
+          console.log('Validado');
+          if(this.$route.query.id){
+            //this.id = this.$route.query.id;
+            //console.log('Yes ID');
+            this.updatePost();        
+          } else {
+            //this.$router.push(`/`);
+            //console.log('No ID');
+            this.createPost();        
+          } 
+        }
+      });
+      /*
+      if(this.$route.query.id){
+        //this.id = this.$route.query.id;
+        //console.log('Yes ID');
+        this.updatePost();        
+      } else {
+        //this.$router.push(`/`);
+        //console.log('No ID');
+        this.createPost();        
+      } 
+      */     
+    },
+
     async updatePost() {
         //this.id = this.$route.query.id;
-        console.log('this.posts', this.posts);
+        //console.log('this.posts', this.posts);
         this.posts[0].id = this.$route.query.id;
         
         await PostService.updatePost( this.posts, '' );
         this.$router.push(`ViewCostumer?id=${this.id}`);
       //this.posts = await PostService.getPosts();
+    },
+
+    async createPost() {
+      //console.log("11111111");
+      //console.log("this.posts: ", this.posts);
+      let data = '';
+      data = await PostService.insertPost(
+        '',
+        this.posts
+        );
+        //console.log('Data de return: ', data);
+        this.$router.push(`ViewCostumer?id=${data}`);
+
     }
 
 
@@ -377,6 +427,27 @@ export default {
     font-size: 16px;
     max-width: 1250px;
      
+  }
+
+  div.create-post input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(192, 192, 192);
+    opacity: 1; /* Firefox */
+  }
+
+  div.create-post input:valid {
+    border: 1px solid rgb(30, 207, 30);
+  }
+
+  div.create-post input:invalid {
+    border: 2px solid red;
+  }
+
+  input[aria-invalid="true"] {
+    border-color: red;
+  }
+
+  input[aria-invalid="false"] {
+      border-color: green;
   }
 
     div.create-post textarea{
@@ -427,10 +498,6 @@ export default {
     /*background-color: #eee;*/
   }
 
-  div.create-post input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgb(192, 192, 192);
-    opacity: 1; /* Firefox */
-  }
 
   div.create-post textarea::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: rgb(192, 192, 192);

@@ -312,21 +312,17 @@ export default {
     async getMessages() {
       //console.log('hay mensajes 1: ', this.theyaremessages );
       try {
+
         this.postsmessages = await PostService.getMessages(this.id);
-        //console.log("JIDER: ", this.postsmessages);
+        //console.log("this.id: ", this.id);
         //console.log("idCustomer: ", this.postsmessages[0].idCustomer);
-        //if(typeof this.postsmessages[0].idCustomer !== 'undefined')
         if(this.postsmessages[0])
         { 
-          //console.log('yessssssss');
           this.theyaremessages = true;
         }
 
         //this.postsmessages.sort();
         this.postsmessages.sort(this.compare);
-
-        //console.log('hay mensajes 2: ', this.theyaremessages );
-
 
       } catch(err) {
         this.error = err.message;
@@ -344,16 +340,15 @@ export default {
     },
 
     async deletePost(deleteMessage = ''){
-      //console.log("ID: ", this.id);
-      //console.log("ID: ", this.postsmessages[0]._id);
-      //console.log('33333333333: ', deleteMessage);
       await PostService.deletePost(this.id, deleteMessage);
-      
-      //await PostService.deletePost(this.id);
-      this.posts = await PostService.getPosts();
-      //this.$router.push(`ViewCostumer?id=${this.id}`);
-      this.$router.push(`\/`);
-      this.hide ();
+      if(deleteMessage !== ''){
+        this.posts = await PostService.getPosts(this.id);      
+        this.getMessages();
+        this.hide ();
+      } else {
+        this.$router.push(`\/`);
+      }
+
       
     },
     //PopUp delete window

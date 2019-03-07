@@ -1,8 +1,8 @@
 <template>
   <div id="app">
 
-  Window width: {{ windowWidth }}
-  <br> Window heightr: {{ windowHeight }}
+    Window width: {{ windowWidth }}
+    <br> Window heightr: {{ windowHeight }}
 
     <div v-if="windowWidth > 500" style="margin: 0; width: 100%;  height: 100%; ">
       <div style="margin: 0; width: 100%;  height: 100%; ">
@@ -45,7 +45,6 @@
     </div>
 
 
-
   </div>
 </template>
 
@@ -64,7 +63,7 @@ export default {
   data: function() {
     return {
       msg: 'Hello World! This is a Event listener test.',
-      windowWidth: 0,
+      windowWidth: 10,
       windowHeight: 0,
     }
   },
