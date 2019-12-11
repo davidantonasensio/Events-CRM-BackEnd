@@ -10,8 +10,8 @@ const router = express.Router();
     let collection;
     let collectioninfos;
 
-    const user = 'eventsuser';
-    const pass = 'CH0E5pZT4JcaVDod';  
+    const user = '';
+    const pass = '';  
     //const pass = 'esto'; 
 
     //const conection = 'mongodb://'+ user +':'+ pass +'@192.168.2.67:27017/events';
