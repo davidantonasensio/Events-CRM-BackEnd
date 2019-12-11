@@ -8,10 +8,10 @@
 # Install dependencies
 npm install
 
-# Start Express Server: http://192.168.2.65:5000
+# Start Express Server: http://192.168.2.67:5000
 npm start
 
-# Start Vue DevServer: http://192.168.2.65:8080
+# Start Vue DevServer: http://192.168.2.67:8080
 cd client
 npm run serve
 
