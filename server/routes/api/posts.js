@@ -16,7 +16,7 @@ const router = express.Router();
 
     //const conection = 'mongodb://'+ user +':'+ pass +'@192.168.2.67:27017/events';
     const conection = 'mongodb+srv://'+ user +':'+ pass +'@davidantoncluster-fylkr.mongodb.net/test?retryWrites=true'
-    const client = MongoClient.connect(conection,{useNewUrlParser: true})
+    const client = MongoClient.connect(conection,{useNewUrlParser: true, useUnifiedTopology: true})
     .then(
         client => 
         {            
