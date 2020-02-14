@@ -4,7 +4,7 @@ const router = express.Router();
 
 const uriDB = require('./event-db');
 /*
- * information that has to be in event-db.js
+ * information include this in event-db.js
  * 
  * const user = 'userName';
  * const pass = 'password';  
