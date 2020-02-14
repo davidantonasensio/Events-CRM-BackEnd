@@ -1,6 +1,7 @@
 # Microposts
 
-- Events CRM APP to control customers in the Event business, oriented spetialy on the wedding industry
+- Events CRM Back-End APP to control customers in the Event business, oriented specially on the wedding industry
+- Back-End developed with Node.js
 
 ## Quick Start
 
@@ -8,15 +9,10 @@
 # Install dependencies
 npm install
 
-# Start Express Server: http://192.168.2.67:5000
+# Start Express Server: http://192.168.2.1:5000
 npm start
 
-# Start Vue DevServer: http://192.168.2.67:8080
-cd client
-npm run serve
-
 # Build for production (Will build into server/public, ready for deployment)
-cd client
 npm run build
 ```
 
