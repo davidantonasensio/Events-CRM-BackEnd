@@ -1,7 +1,11 @@
 # Microposts
 
-- Events CRM Back-End APP to control customers in the Event business, oriented specially on the wedding industry
+- Events CRM Back-End RESTful App to control customers in the Event business, oriented specially on the wedding industry
 - Back-End developed with Node.js
+
+## Comming soon
+- Split controllers
+- Docker container with this node App + MongoDB container
 
 ## Quick Start
 
